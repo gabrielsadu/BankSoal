@@ -150,21 +150,21 @@ class Ujian extends BaseController
 
     public function detailUjian($id_mata_kuliah, $id)
     {
-        $filteredData =  $this->SoalUjianModel->where('id_ujian', $id)->findAll();
-        $soalData = array();
+        $filteredData =  $this->BabUntukUjianModel->where('id_ujian', $id)->findAll();
+        $babData = array();
         foreach ($filteredData as $row) {
-            $idSoal = $row['id_soal'];
-            $soal = $this->SoalModel->find($idSoal);
-            if ($soal) {
-                $soalData[] = $soal;
+            $idBab = $row['id_bab'];
+            $bab = $this->BabModel->find($idBab);
+            if ($bab) {
+                $babData[] = $bab;
             }
         }
         $data = [
             'title' => 'Bank Soal',
             'id_mata_kuliah' => $id_mata_kuliah,
             'ujian' => $this->UjianModel->getUjian($id),
-            'soal' => $this->SoalModel->getSoal(),
-            'soal_data' => $soalData
+            'soal_model' => $this->SoalModel->getSoal(),
+            'bab_data' => $babData
         ];
 
         if (empty($data['ujian'])) {

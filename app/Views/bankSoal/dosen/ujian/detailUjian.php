@@ -17,6 +17,10 @@
                 <tbody>
                     <tr>
                         <td>Nama Ujian</td>
+                        <td><?= $ujian['nama_ujian'] ?></td>
+                    </tr>
+                    <tr>
+                        <td>Deskripsi Ujian</td>
                         <td><?= $ujian['deskripsi_ujian'] ?></td>
                     </tr>
                     <tr>
@@ -32,8 +36,16 @@
                         <td><?= $ujian['durasi_ujian'] ?> Menit</td>
                     </tr>
                     <tr>
-                        <td> Nilai Minimum Kelulusan</td>
+                        <td>Nilai Minimum Kelulusan</td>
                         <td><?= $ujian['nilai_minimum_kelulusan'] ?> %</td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah Soal</td>
+                        <td><?= $ujian['jumlah_soal'] ?></td>
+                    </tr>
+                    <tr>
+                        <td>Acak Soal</td>
+                        <td><?= ($ujian['random']) === 0 ? 'Tidak' : 'Ya'; ?></td>
                     </tr>
                     <?php if ($ujian['ruang_ujian']) : ?>
                         <tr>
@@ -46,13 +58,24 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Soal Ujian</th>
+                        <th scope="col" style="width: 85%">Bab Untuk Ujian</th>
+                        <?php $count = array_count_values(array_column($soal_model, 'id_bab')); ?>
+                        <?php $countAll = 0; ?>
+                        <th scope="col" style="width: 15%">Total :
+                            <?php foreach ($bab_data as $k) : ?>
+                                <?php $countAll = $countAll + $count[$k['id']]; ?>
+                            <?php endforeach; ?>
+                            <?= $countAll; ?>
+                            Soal</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($soal_data as $k) : ?>
+                    <?php foreach ($bab_data as $k) : ?>
                         <tr>
-                            <td><?php echo $k['soal']; ?></td>
+                            <td><?= $k['nama_bab']; ?></td>
+                            <td>
+                                <?= $count[$k['id']]; ?> Soal
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
