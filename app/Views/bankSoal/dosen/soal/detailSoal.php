@@ -22,21 +22,26 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Jawaban</th>
+                        <th scope="col" style="width: 5%">Opsi</th>
+                        <th scope="col" style="width: 95%">Jawaban</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="<?= ($soal['jawaban_benar'] == 'jawaban_a') ? 'table-success' : '' ?>">
-                        <td style="max-width: 800px;overflow:auto; word-wrap: break-word; white-space: pre-wrap;">A.<?= $soal['jawaban_a'] ?></td>
+                        <td>A.</td>
+                        <td><?= $soal['jawaban_a'] ?></td>
                     </tr>
-                    <tr class="<?= ($soal['jawaban_benar'] == 'jawaban_bb') ? 'table-success' : '' ?>">
-                        <td style="max-width: 800px;overflow:auto; word-wrap: break-word; white-space: pre-wrap;">B.<?= $soal['jawaban_b'] ?></td>
+                    <tr class="<?= ($soal['jawaban_benar'] == 'jawaban_b') ? 'table-success' : '' ?>">
+                        <td>B.</td>
+                        <td><?= $soal['jawaban_b'] ?></td>
                     </tr>
                     <tr class="<?= ($soal['jawaban_benar'] == 'jawaban_c') ? 'table-success' : '' ?>">
-                        <td style="max-width: 800px;overflow:auto; word-wrap: break-word; white-space: pre-wrap;">C.<?= $soal['jawaban_c'] ?></td>
+                        <td>C.</td>
+                        <td><?= $soal['jawaban_c'] ?></td>
                     </tr>
                     <tr class="<?= ($soal['jawaban_benar'] == 'jawaban_d') ? 'table-success' : '' ?>">
-                        <td style="max-width: 800px;overflow:auto; word-wrap: break-word; white-space: pre-wrap;">D.<?= $soal['jawaban_d'] ?></td>
+                        <td>D.</td>
+                        <td><?= $soal['jawaban_d'] ?></td>
                     </tr>
                 </tbody>
             </table>

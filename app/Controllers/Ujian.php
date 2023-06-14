@@ -7,6 +7,7 @@ use App\Models\BabModel;
 use App\Models\SoalModel;
 use App\Models\UjianModel;
 use App\Models\SoalUjianModel;
+use App\Models\BabUntukUjianModel;
 use Config\Database;
 
 class Ujian extends BaseController
@@ -16,6 +17,7 @@ class Ujian extends BaseController
     protected $SoalModel;
     protected $UjianModel;
     protected $SoalUjianModel;
+    protected $BabUntukUjianModel;
     protected $helpers = ['form'];
     public function __construct()
     {
@@ -24,6 +26,7 @@ class Ujian extends BaseController
         $this->SoalModel = new SoalModel();
         $this->UjianModel = new UjianModel();
         $this->SoalUjianModel = new SoalUjianModel();
+        $this->BabUntukUjianModel = new BabUntukUjianModel();
     }
 
     public function tambahUjian($id)
@@ -31,7 +34,8 @@ class Ujian extends BaseController
         $data = [
             'title' => 'Bank Soal',
             'validation' => \Config\Services::validation(),
-            'id' => $id
+            'id' => $id,
+            'bab' => $this->BabModel->getBab(),
         ];
 
         return view('bankSoal/dosen/ujian/tambahUjian', $data);
@@ -68,6 +72,8 @@ class Ujian extends BaseController
         }
         $waktu_buka_ujian = $this->request->getVar('waktu_buka_ujian');
         $waktu_tutup_ujian = $this->request->getVar('waktu_tutup_ujian');
+        $random = isset($_POST['random']) ? 1 : 0;
+        $pilih_soal = $this->request->getpost('bab');
         $this->UjianModel->insert([
             'nama_ujian' => $this->request->getVar('nama_ujian'),
             'deskripsi_ujian' => $this->request->getVar('deskripsi_ujian'),
@@ -75,9 +81,19 @@ class Ujian extends BaseController
             'waktu_tutup_ujian' => date('Y-m-d H:i:s', strtotime($waktu_tutup_ujian)),
             'durasi_ujian' => $this->request->getVar('durasi_ujian'),
             'nilai_minimum_kelulusan' => $this->request->getVar('nilai_minimum_kelulusan'),
+            'jumlah_soal' => $this->request->getVar('jumlah_soal'),
+            'random' => $random,
             'ruang_ujian' => $this->request->getVar('ruang_ujian'),
             'id_mata_kuliah' => $id
         ]);
+        $insert_id = $this->UjianModel->getInsertID();
+        foreach ($pilih_soal as $value) {
+            $this->BabUntukUjianModel->insert([
+                'id_bab' => $value,
+                'id_ujian' => $insert_id
+            ]);
+        }
+        
         session()->setFlashdata('pesan_ujian', 'Ujian berhasil ditambahkan');
         return redirect()->to('/banksoal/' . $id);
     }

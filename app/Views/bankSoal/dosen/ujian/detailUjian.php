@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <td> Nilai Minimum Kelulusan</td>
-                        <td><?= $ujian['nilai_minimum_kelulusan'] ?></td>
+                        <td><?= $ujian['nilai_minimum_kelulusan'] ?> %</td>
                     </tr>
                     <?php if ($ujian['ruang_ujian']) : ?>
                         <tr>
