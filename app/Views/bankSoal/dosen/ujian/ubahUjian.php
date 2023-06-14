@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 <div class="container">
     <div class="row">
-        <div class="col-8">
+        <div class="col-12">
             <h2 class="my-3">Ubah Ujian</h2>
             <a href="/banksoal/<?= $id; ?>">Kembali ke Daftar Bab</a>
             <br><br>
@@ -72,34 +72,73 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
+                    <label for="jumlah_soal" class="col-sm-2 col-form-label">Jumlah Soal Untuk Ujian</label>
                     <div class="col-sm-2 mt-4">
-                        <input type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian">
+                        <input type="number" class="form-control <?= (validation_show_error('jumlah_soal')) ? 'is-invalid' : ''; ?>" id="jumlah_soal" name="jumlah_soal" value="<?= $ujian['jumlah_soal']; ?>">
+                        <div class="invalid-feedback">
+                            <?= validation_show_error('jumlah_soal'); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="pilih_soal_dari_bab" class="col-sm-2 col-form-label">Pilih Soal Dari Bab</label>
+                    <div class="col">
+                        <ul class="list-group" id="pilih_soal_dari_bab">
+                            <?php foreach ($bab as $bab) : ?>
+                                <?php if ($bab['id_mata_kuliah'] == $id) : ?>
+                                    <?php
+                                    $checked = '';
+                                    foreach ($bab_untuk_ujian as $row) {
+                                        if ($row['id_bab'] == $bab['id'] && $row['id_ujian'] == $ujian['id']) {
+                                            $checked = 'checked';
+                                            break;
+                                        }
+                                    }
+                                    ?>
+                                    <li class="list-group-item">
+                                        <input class="form-check-input me-1" type="checkbox" value="<?= $bab['id'] ?>" name="bab[]" <?= $checked ?>>
+                                        <label class="form-check-label" for="checkbox_bab_<?= $bab['id'] ?>"><?= $bab['nama_bab'] ?></label>
+                                    </li>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="random" class="col-sm-2 col-form-label">Acak Soal</label>
+                    <div class="col-sm-2 mt-4">
+                        <input class="form-check-input me-1" type="checkbox" id="random" name="random" <?= $ujian['random'] == 0 ? '' : 'checked' ?>>
                         <br>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
+                    <div class="col-sm-2 mt-4">
+                        <input class="form-check-input me-1" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= isset($ujian['ruang_ujian']) ? 'checked' : '' ?>>
+                        <br>
+                    </div>
+                </div>
+
                 <div id="menudiv" style="display:none;" class="row mb-3">
-                    <label for="ruang_ujian" class="col-sm-2 col-form-label">Pilih Ruang</label>
-                    <select id="ruang_ujian" name="ruang_ujian">
-                        <option value="">Plih Ruang :</option>
-                        <option value="ruang1">Ruang 1</option>
-                        <option value="ruang2">Ruang 2</option>
-                        <option value="ruang3">Ruang 3</option>
-                    </select>
+                    <div class="col-sm-2"> <label for="ruang_ujian" class="col-form-label">Pilih Ruang</label> </div>
+                    <div class="col-sm-10"> <select id="ruang_ujian" name="ruang_ujian" class="form-control">
+                            <option value="">Pilih Ruang :</option>
+                            <option value="ruang1" <?= $ujian['ruang_ujian'] === 'ruang1' ? 'selected' : '' ?>>Ruang 1</option>
+                            <option value="ruang2" <?= $ujian['ruang_ujian'] === 'ruang2' ? 'selected' : '' ?>>Ruang 2</option>
+                            <option value="ruang3" <?= $ujian['ruang_ujian'] === 'ruang3' ? 'selected' : '' ?>>Ruang 3</option>
+
+                        </select> </div>
                 </div>
                 <br>
                 <script>
                     var checkbox = document.getElementById("menggunakan_ruang_ujian");
                     var menudiv = document.getElementById("menudiv");
 
-                    checkbox.addEventListener("change", function() {
-                        if (checkbox.checked) {
-                            menudiv.style.display = "block";
-                        } else {
-                            menudiv.style.display = "none";
-
-                        }
-                    });
+                    function setDisplay() {
+                        menudiv.style.display = checkbox.checked ? "flex" : "none";
+                    }
+                    setDisplay();
+                    checkbox.addEventListener("change", setDisplay);
                 </script>
                 <button type="submit" class="btn btn-primary">Ubah Ujian</button>
             </form>

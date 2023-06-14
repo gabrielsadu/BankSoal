@@ -6,7 +6,6 @@
         <div class="col">
             <h1 class="mt-2"><?= $ujian['nama_ujian'] ?></h1><br>
             <a href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Halaman Sebelumnya</a><br><br>
-            <a href="/banksoal/<?= $id_mata_kuliah; ?>/ubah_soal_ujian/<?= $ujian['id']; ?>" class="btn btn-primary mb-3">Ubah Soal Ujian</a><br>
             <table class="table">
                 <thead>
                     <tr>
@@ -58,15 +57,16 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 85%">Bab Untuk Ujian</th>
+                        <th scope="col" style="width: 80%">Bab Untuk Ujian</th>
                         <?php $count = array_count_values(array_column($soal_model, 'id_bab')); ?>
                         <?php $countAll = 0; ?>
-                        <th scope="col" style="width: 15%">Total :
+                        <th scope="col" style="width: 20%">
                             <?php foreach ($bab_data as $k) : ?>
                                 <?php $countAll = $countAll + $count[$k['id']]; ?>
                             <?php endforeach; ?>
                             <?= $countAll; ?>
-                            Soal</th>
+                            Soal Tersedia
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

@@ -55,8 +55,6 @@ $routes->get('/banksoal/(:num)/ubah_ujian/(:num)', 'Ujian::ubahUjian/$1/$2');
 $routes->post('/banksoal/(:num)/update_ujian/(:num)', 'Ujian::updateUjian/$1/$2');
 $routes->delete('/banksoal/(:num)/hapus_ujian/(:num)', 'Ujian::hapusUjian/$1/$2');
 $routes->get('/banksoal/(:num)/detail_ujian/(:num)', 'Ujian::detailUjian/$1/$2');
-$routes->get('/banksoal/(:num)/ubah_soal_ujian/(:num)', 'Ujian::ubahSoalUjian/$1/$2');
-$routes->post('/banksoal/(:num)/update_soal_ujian/(:num)', 'Ujian::UpdateSoalUjian/$1/$2');
 
 $routes->get('/banksoal/masuk_ujian', 'Mahasiswa::masukUjian');
 

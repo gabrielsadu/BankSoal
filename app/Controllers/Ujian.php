@@ -6,7 +6,6 @@ use App\Models\MataKuliahModel;
 use App\Models\BabModel;
 use App\Models\SoalModel;
 use App\Models\UjianModel;
-use App\Models\SoalUjianModel;
 use App\Models\BabUntukUjianModel;
 use Config\Database;
 
@@ -16,7 +15,6 @@ class Ujian extends BaseController
     protected $BabModel;
     protected $SoalModel;
     protected $UjianModel;
-    protected $SoalUjianModel;
     protected $BabUntukUjianModel;
     protected $helpers = ['form'];
     public function __construct()
@@ -25,7 +23,6 @@ class Ujian extends BaseController
         $this->BabModel = new BabModel();
         $this->SoalModel = new SoalModel();
         $this->UjianModel = new UjianModel();
-        $this->SoalUjianModel = new SoalUjianModel();
         $this->BabUntukUjianModel = new BabUntukUjianModel();
     }
 
@@ -35,7 +32,7 @@ class Ujian extends BaseController
             'title' => 'Bank Soal',
             'validation' => \Config\Services::validation(),
             'id' => $id,
-            'bab' => $this->BabModel->getBab(),
+            'bab' => $this->BabModel->getBab()
         ];
 
         return view('bankSoal/dosen/ujian/tambahUjian', $data);
@@ -93,7 +90,7 @@ class Ujian extends BaseController
                 'id_ujian' => $insert_id
             ]);
         }
-        
+
         session()->setFlashdata('pesan_ujian', 'Ujian berhasil ditambahkan');
         return redirect()->to('/banksoal/' . $id);
     }
@@ -111,7 +108,9 @@ class Ujian extends BaseController
             'title' => 'Bank Soal',
             'validation' => \Config\Services::validation(),
             'ujian' => $this->UjianModel->getUjian($id),
-            'id' => $id_mata_kuliah
+            'id' => $id_mata_kuliah,
+            'bab' => $this->BabModel->getBab(),
+            'bab_untuk_ujian' => $this->BabUntukUjianModel->getBabUntukUjian()
         ];
 
         return view('bankSoal/dosen/ujian/ubahUjian', $data);
@@ -172,46 +171,5 @@ class Ujian extends BaseController
         }
 
         return view('bankSoal/dosen/ujian/detailUjian', $data);
-    }
-
-    public function ubahSoalUjian($id_mata_kuliah, $id)
-    {
-        $data = [
-            'title' => 'Bank Soal',
-            'validation' => \Config\Services::validation(),
-            'id_mata_kuliah' => $id_mata_kuliah,
-            'bab' => $this->BabModel->getBab(),
-            'soal' => $this->SoalModel->getSoal(),
-            'soal_ujian' => $this->SoalUjianModel->getSoalUjian(),
-            'soal_ujian2' => $this->SoalUjianModel,
-            'ujian' => $this->UjianModel->getUjian($id),
-        ];
-
-        return view('bankSoal/dosen/ujian/ubahSoalUjian', $data);
-    }
-
-    public function updateSoalUjian($id_mata_kuliah, $id)
-    {
-        $checkedSoalIds = [];
-        foreach ($_POST as $key => $value) {
-            if (strpos($key, 'id_soal_') === 0 && $value) {
-                $checkedSoalIds[] = $value;
-            }
-        }
-        $existingSoalIds = $this->SoalUjianModel->getSoalIdsByUjianId($id);
-        $uncheckedSoalIds = array_diff($existingSoalIds, $checkedSoalIds);
-        foreach ($uncheckedSoalIds as $id_soal) {
-            $this->SoalUjianModel->where('id_soal', $id_soal)->delete();
-        }
-        foreach ($checkedSoalIds as $id_soal) {
-            if (!$this->SoalUjianModel->getSoalFromSoalUjian($id_soal)) {
-                $this->SoalUjianModel->insert([
-                    'id_soal' => $id_soal,
-                    'id_ujian' => $id
-                ]);
-            }
-        }
-        session()->setFlashdata('pesan_ujian', ' Soal Ujian berhasil diubah');
-        return redirect()->to('/banksoal/' . $id_mata_kuliah . '/detail_ujian/' . $id);
     }
 }
