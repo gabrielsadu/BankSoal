@@ -110,7 +110,7 @@ class Ujian extends BaseController
             'ujian' => $this->UjianModel->getUjian($id),
             'id' => $id_mata_kuliah,
             'bab' => $this->BabModel->getBab(),
-            'bab_untuk_ujian' => $this->BabUntukUjianModel->getBabUntukUjian()
+            'bab_untuk_ujian' => $this->BabUntukUjianModel->getBab($id)
         ];
 
         return view('bankSoal/dosen/ujian/ubahUjian', $data);
@@ -118,6 +118,11 @@ class Ujian extends BaseController
 
     public function updateUjian($id_mata_kuliah, $id)
     {
+        $ruang_ujian = $this->request->getVar('ruang_ujian');
+        if ((null == $ruang_ujian)) {
+            $ruang_ujian = null;
+        }
+        $random = (null !== ($this->request->getVar('random')) ? 1 : 0);
         $waktu_buka_ujian = $this->request->getVar('waktu_buka_ujian');
         $waktu_tutup_ujian = $this->request->getVar('waktu_tutup_ujian');
         $ujianLama = $this->UjianModel->getUjian($id);
@@ -129,6 +134,8 @@ class Ujian extends BaseController
             && $ujianLama['durasi_ujian'] == $this->request->getVar('durasi_ujian')
             && $ujianLama['nilai_minimum_kelulusan'] == $this->request->getVar('nilai_minimum_kelulusan')
             && $ujianLama['ruang_ujian'] == $this->request->getVar('ruang_ujian')
+            && $ujianLama['jumlah_soal'] == $this->request->getVar('jumlah_soal')
+            && $ujianLama['random'] == $this->request->getVar('random')
         ) {
             return redirect()->to('/banksoal/' . $id_mata_kuliah . '/ubah_ujian/' . $id)->withInput();
         }
@@ -140,9 +147,40 @@ class Ujian extends BaseController
             'waktu_tutup_ujian' => date('Y-m-d H:i:s', strtotime($waktu_tutup_ujian)),
             'durasi_ujian' => $this->request->getVar('durasi_ujian'),
             'nilai_minimum_kelulusan' => $this->request->getVar('nilai_minimum_kelulusan'),
-            'ruang_ujian' => $this->request->getVar('ruang_ujian'),
+            'ruang_ujian' => $ruang_ujian,
+            'jumlah_soal' => $this->request->getVar('jumlah_soal'),
+            'random' => $random,
             'id_mata_kuliah' => $id_mata_kuliah
         ]);
+
+        $pilih_soal = $this->request->getpost('bab');
+
+        $bab_untuk_ujian = $this->BabUntukUjianModel->getBab($id);
+
+        foreach ($pilih_soal as $bab_id) {
+            $found = false;
+            foreach ($bab_untuk_ujian as $row) {
+                if ($row == $bab_id) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $this->BabUntukUjianModel->insert(['id_ujian' => $id, 'id_bab' => $bab_id]);
+            }
+        }
+        foreach ($bab_untuk_ujian as $row) {
+            $found = false;
+            foreach ($pilih_soal as $bab_id) {
+                if ($row == $bab_id) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $this->BabUntukUjianModel->where('id_ujian', $id)->where('id_bab', $row)->delete();
+            }
+        }
         session()->setFlashdata('pesan', 'Ujian berhasil diubah');
         return redirect()->to('/banksoal/' . $id_mata_kuliah);
     }

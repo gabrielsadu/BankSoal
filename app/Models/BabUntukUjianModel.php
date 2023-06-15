@@ -10,29 +10,12 @@ class BabUntukUjianModel extends Model
     protected $useTimestamps = true;
     protected $allowedFields = ['id_bab', 'id_ujian'];
 
-    public function getBabUntukUjian($id = false)
+    public function getUjian($id_bab)
     {
-        if ($id == false) {
-            return $this->findAll();
-        }
-
-        return $this->where(['id' => $id])->first();
+        return $this->where('id_bab', $id_bab)->findColumn('id_ujian');
     }
-    public function getBabIdsByUjianId($id)
+    public function getBab($id_ujian)
     {
-        $db = \Config\Database::connect();
-        $query = $db->table('bab_ujian')
-            ->select(['id_bab'])
-            ->where('id_ujian', $id);
-        $result = $query->get()->getResult();
-
-
-        $babIds = [];
-
-        foreach ($result as $row) {
-            $babIds[] = $row->id_bab;
-        }
-
-        return $babIds;
+        return $this->where('id_ujian', $id_ujian)->findColumn('id_bab');
     }
 }

@@ -89,7 +89,7 @@
                                     <?php
                                     $checked = '';
                                     foreach ($bab_untuk_ujian as $row) {
-                                        if ($row['id_bab'] == $bab['id'] && $row['id_ujian'] == $ujian['id']) {
+                                        if ($row == $bab['id']) {
                                             $checked = 'checked';
                                             break;
                                         }
@@ -114,7 +114,7 @@
                 <div class="row mb-3">
                     <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
                     <div class="col-sm-2 mt-4">
-                        <input class="form-check-input me-1" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= isset($ujian['ruang_ujian']) ? 'checked' : '' ?>>
+                        <input class="form-check-input me-1" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= null != ($ujian['ruang_ujian']) ? 'checked' : '' ?>>
                         <br>
                     </div>
                 </div>
