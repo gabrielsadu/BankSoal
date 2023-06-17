@@ -3,20 +3,22 @@
 <?= $this->section('content'); ?>
 <div class="container">
     <div class="row">
-        <div class="col"></br>
-            <h1 class="mt-2">Bank Soal</h1>
-            </br></br>
-            <div class="col d-flex justify-content-center">
-                <?php foreach ($mataKuliah as $k) : ?>
-                    <div class="card text-center" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= $k['nama_mata_kuliah'] ?></h5>
-                            <p class="card-text"><?= $k['kode_mata_kuliah'] ?></p>
-                            <a href="/banksoal/<?= $k['id']; ?>" class="btn btn-primary">Detail</a>
+        <div class="col-12">
+            <h2 class="my-3">Masuk Ujian</h2>
+            <br><br>
+            <form action="/ujian/mendaftar_ujian" method="post">
+                <?= csrf_field(); ?>
+                <div class="row mb-3">
+                    <label for="kode_ujian" class="col-sm-2 col-form-label">Kode Ujian</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control form-control-lg <?= (validation_show_error('kode_ujian')) ? 'is-invalid' : ''; ?> " id="kode_ujian" name="kode_ujian" value="<?= old('kode_ujian'); ?>">
+                        <div class="invalid-feedback">
+                            <?= validation_show_error('kode_ujian'); ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Tambah Ujian</button>
+            </form>
         </div>
     </div>
 </div>
