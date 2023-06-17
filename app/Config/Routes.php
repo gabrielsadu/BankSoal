@@ -31,32 +31,37 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
-$routes->get('/banksoal', 'BankSoal::index');
-$routes->get('/banksoal/(:num)', 'BankSoal::daftarBab/$1');
-$routes->get('/banksoal/(:num)/tambah_bab', 'BankSoal::tambahBab/$1');
-$routes->post('/banksoal/(:num)/simpan_bab', 'BankSoal::simpanBab/$1');
-$routes->get('/banksoal/(:num)/ubah_bab/(:num)', 'BankSoal::ubahBab/$1/$2');
-$routes->post('/banksoal/(:num)/update_bab/(:num)', 'BankSoal::updateBab/$1/$2');
-$routes->delete('/banksoal/(:num)/hapus_bab/(:num)', 'BankSoal::hapusBab/$1/$2');
+$routes->group('banksoal', ['filter' => 'role:administrator'], static function ($routes) {
+    $routes->get('/', 'BankSoal::index');
+    $routes->get('(:num)', 'BankSoal::daftarBab/$1');
+    $routes->get('(:num)/tambah_bab', 'BankSoal::tambahBab/$1');
+    $routes->post('(:num)/simpan_bab', 'BankSoal::simpanBab/$1');
+    $routes->get('(:num)/ubah_bab/(:num)', 'BankSoal::ubahBab/$1/$2');
+    $routes->post('(:num)/update_bab/(:num)', 'BankSoal::updateBab/$1/$2');
+    $routes->delete('(:num)/hapus_bab/(:num)', 'BankSoal::hapusBab/$1/$2');
 
-$routes->get('/banksoal/(:num)/bab/(:num)', 'Soal::daftarSoal/$1/$2');
-$routes->get('/banksoal/(:num)/bab/(:num)/tambah_soal', 'Soal::tambahSoal/$1/$2');
-$routes->post('/banksoal/(:num)/bab/(:num)/simpan_soal', 'Soal::simpanSoal/$1/$2');
-$routes->get('/banksoal/(:num)/bab/(:num)/ubah_soal/(:num)', 'Soal::ubahSoal/$1/$2/$3');
-$routes->post('/banksoal/(:num)/bab/(:num)/update_soal/(:num)', 'Soal::updateSoal/$1/$2/$3');
-$routes->delete('/banksoal/(:num)/bab/(:num)/hapus_soal/(:num)', 'Soal::hapusSoal/$1/$2/$3');
-$routes->get('/banksoal/(:num)/bab/(:num)/detail_soal/(:num)', 'Soal::detailSoal/$1/$2/$3');
-$routes->post('/bankSoal/uploadGambar', 'Soal::uploadGambar');
-$routes->post('/bankSoal/deleteGambar', 'Soal::deleteGambar');
+    $routes->get('(:num)/bab/(:num)', 'Soal::daftarSoal/$1/$2');
+    $routes->get('(:num)/bab/(:num)/tambah_soal', 'Soal::tambahSoal/$1/$2');
+    $routes->post('(:num)/bab/(:num)/simpan_soal', 'Soal::simpanSoal/$1/$2');
+    $routes->get('(:num)/bab/(:num)/ubah_soal/(:num)', 'Soal::ubahSoal/$1/$2/$3');
+    $routes->post('(:num)/bab/(:num)/update_soal/(:num)', 'Soal::updateSoal/$1/$2/$3');
+    $routes->delete('(:num)/bab/(:num)/hapus_soal/(:num)', 'Soal::hapusSoal/$1/$2/$3');
+    $routes->get('(:num)/bab/(:num)/detail_soal/(:num)', 'Soal::detailSoal/$1/$2/$3');
+    $routes->post('/uploadGambar', 'Soal::uploadGambar');
+    $routes->post('/deleteGambar', 'Soal::deleteGambar');
 
-$routes->get('/banksoal/(:num)/tambah_ujian', 'Ujian::tambahUjian/$1');
-$routes->post('/banksoal/(:num)/simpan_ujian', 'Ujian::simpanUjian/$1');
-$routes->get('/banksoal/(:num)/ubah_ujian/(:num)', 'Ujian::ubahUjian/$1/$2');
-$routes->post('/banksoal/(:num)/update_ujian/(:num)', 'Ujian::updateUjian/$1/$2');
-$routes->delete('/banksoal/(:num)/hapus_ujian/(:num)', 'Ujian::hapusUjian/$1/$2');
-$routes->get('/banksoal/(:num)/detail_ujian/(:num)', 'Ujian::detailUjian/$1/$2');
+    $routes->get('(:num)/tambah_ujian', 'Ujian::tambahUjian/$1');
+    $routes->post('(:num)/simpan_ujian', 'Ujian::simpanUjian/$1');
+    $routes->get('(:num)/ubah_ujian/(:num)', 'Ujian::ubahUjian/$1/$2');
+    $routes->post('(:num)/update_ujian/(:num)', 'Ujian::updateUjian/$1/$2');
+    $routes->delete('(:num)/hapus_ujian/(:num)', 'Ujian::hapusUjian/$1/$2');
+    $routes->get('(:num)/detail_ujian/(:num)', 'Ujian::detailUjian/$1/$2');
+});
 
-$routes->get('/banksoal/masuk_ujian', 'Mahasiswa::masukUjian');
+$routes->group('ujian', ['filter' => 'role:administrator,user'], static function ($routes) {
+    $routes->get('masuk_ujian', 'Mahasiswa::masukUjian');
+});
+
 
 
 /*
