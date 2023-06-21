@@ -16,6 +16,6 @@ class UserSoalUjianModel extends Model
             return $this->findAll();
         }
 
-        return $this->where(['id' => $id])->first();
+        return $this->where(['id_kode_users' => $id])->findColumn('id_soal');
     }
 }

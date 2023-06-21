@@ -10,6 +10,7 @@ use App\Models\KodeUjianModel;
 use App\Models\BabUntukUjianModel;
 use App\Models\KodeUsersModel;
 use App\Models\UserSoalUjianModel;
+use App\Models\UserNilaiModel;
 use Config\Database;
 
 class Mahasiswa extends BaseController
@@ -22,6 +23,7 @@ class Mahasiswa extends BaseController
     protected $BabUntukUjianModel;
     protected $KodeUsersModel;
     protected $UserSoalUjianModel;
+    protected $UserNilaiModel;
     protected $helpers = ['form', 'auth'];
     public function __construct()
     {
@@ -33,6 +35,7 @@ class Mahasiswa extends BaseController
         $this->BabUntukUjianModel = new BabUntukUjianModel();
         $this->KodeUsersModel = new KodeUsersModel();
         $this->UserSoalUjianModel = new UserSoalUjianModel();
+        $this->UserNilaiModel = new UserNilaiModel();
     }
 
     public function masukUjian()
@@ -58,8 +61,15 @@ class Mahasiswa extends BaseController
         ])) {
             return redirect()->to('/ujian/masuk_ujian')->withInput();
         }
-        if ($kodeUjian === $this->KodeUjianModel->getKodeUjian($kodeUjian)) {
-            return redirect()->to('/ujian/detail_ujian/' . $this->KodeUjianModel->getUjian($kodeUjian));
+        if ($this->KodeUjianModel->getKodeUjian($kodeUjian)) {
+            if (!$this->KodeUsersModel->getKodeUsersId(user_id(), $kodeUjian)) {
+                $this->KodeUsersModel->insert([
+                    'id_users' => user_id(),
+                    'kode_ujian' => $kodeUjian,
+                ]);
+            }
+            $kodeUsers = $this->KodeUsersModel->getKodeUsersId(user_id(), $kodeUjian);
+            return redirect()->to('/ujian/detail_ujian/' . $kodeUsers);
         } else {
             $validation = \Config\Services::validation();
             $validation->setError('kode_ujian', 'Kode Salah');
@@ -68,27 +78,30 @@ class Mahasiswa extends BaseController
     }
     public function detailUjian($id)
     {
+        $kodeUjian = $this->KodeUsersModel->getKode($id);
+        $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
         $data = [
             'title' => 'Bank Soal',
-            'ujian' => $this->UjianModel->getUjian($id),
+            'ujian' => $this->UjianModel->getUjian($idUjian),
+            'id_kode_users' => $id
         ];
 
         if (empty($data['ujian'])) {
-            throw new \codeIgniter\Exceptions\PageNotFoundException('Id Soal Ujian ' . $id . ' tidak ditemukan.');
+            throw new \codeIgniter\Exceptions\PageNotFoundException('Id Sesi ' . $id . ' tidak ditemukan.');
         }
 
         return view('bankSoal/mahasiswa/detailUjian', $data);
     }
     public function randomize($id)
     {
-        $assignedBabs = $this->BabUntukUjianModel->where('id_ujian', $id)->findAll();
+        $kodeUjian = $this->KodeUsersModel->getKode($id);
+        $id_ujian = $this->KodeUjianModel->getUjian($kodeUjian);
+        $assignedBabs = $this->BabUntukUjianModel->where('id_ujian', $id_ujian)->findColumn('id_bab');
         $randomizedSoal = [];
-        $questionCount = $this->UjianModel->where('id', $id)->findColumn('jumlah_soal')[0];
+        $questionCount = $this->UjianModel->where('id', $id_ujian)->findColumn('jumlah_soal')[0];
         $questionPerBab = round($questionCount / count($assignedBabs));
         foreach ($assignedBabs as $index => $assignedBab) {
-            $babID = $assignedBab['id_bab'];
-            $allSoal = $this->SoalModel->where('id_bab', $babID)->findAll();
-            shuffle($allSoal);
+            $allSoal = $this->SoalModel->where('id_bab', $assignedBab)->findAll();
             if ($index === count($assignedBabs) - 1) {
                 $randomSoal = array_slice($allSoal, 0, $questionCount);
             } else {
@@ -97,39 +110,75 @@ class Mahasiswa extends BaseController
             }
             $randomizedSoal = array_merge($randomizedSoal, $randomSoal);
         }
-        shuffle($randomizedSoal);
-
         foreach ($randomizedSoal as $soal) {
             $idSoal = $soal['id'];
-            $id_user_kode = $this->KodeUsersModel->getKodeUsersId(user_id());
             $existingRecord = $this->UserSoalUjianModel
                 ->where('id_soal', $idSoal)
-                ->where('id_kode_users', $id_user_kode)
+                ->where('id_kode_users', $id)
                 ->first();
 
-            if ($existingRecord) {
+            if (!empty($existingRecord)) {
                 break;
             }
+            $this->UserSoalUjianModel->insert([
+                'id_soal' => $idSoal,
+                'id_kode_users' => $id,
+            ]);
         }
     }
     public function mulaiUjian($id)
     {
-        $selectedQuestionIds = $this->UserSoalUjianModel->where('id_kode_users', 1)->findAll();
+        $kodeUjian = $this->KodeUsersModel->getKode($id);
+        $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
         Mahasiswa::randomize($id);
-        $soal = [];
-        foreach ($selectedQuestionIds as $questionId) {
-            $question = $this->SoalModel->find($questionId);
-            if ($question) {
-                $soal[] = $question[0];
-            }
-        }
+        $selectedQuestionIds = $this->UserSoalUjianModel->where('id_kode_users', $id)->findColumn('id_soal');
+        $currentPage = $this->request->getVar('page_soal') ? $this->request->getVar('page_soal') : 1;
         $data = [
             'title' => 'Bank Soal',
-            'ujian' => $this->UjianModel->getUjian($id),
-            'soal' => $soal,
-
+            'ujian' => $this->UjianModel->getUjian($idUjian),
+            'soal' =>  $this->SoalModel->whereIn('id', $selectedQuestionIds)->paginate(1, 'soal'),
+            'pager' => $this->SoalModel->whereIn('id', $selectedQuestionIds)->pager,
+            'currentPage' => $currentPage,
+            'id' => $id
         ];
 
         return view('bankSoal/mahasiswa/mulaiUjian', $data);
+    }
+    public function hasilUjian($id)
+    {
+        $kodeUjian = $this->KodeUsersModel->getKode($id);
+        $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
+        $ujian = $this->UjianModel->getUjian($idUjian);
+        $soals_id = $this->UserSoalUjianModel->getUserSoalUjian($id);
+        $soals = $this->SoalModel->whereIn('id', $soals_id)->findAll();
+        $nilai = [];
+        /** @var string $cookie_data */
+        $cookie_data = $this->request->getCookie('selected_answers');
+        $selectedAnswers = (array) json_decode($cookie_data);
+
+        foreach ($soals as $soal) {
+            $jawaban = isset($selectedAnswers[$soal['id']]) ? $selectedAnswers[$soal['id']] : '';
+            $isCorrect = ($jawaban === $soal['jawaban_benar']);
+            array_push($nilai, $isCorrect);
+        }
+
+        $nilai = (array_sum($nilai) / count($nilai)) * 100;
+        $existingRecord = $this->UserNilaiModel->findColumn('id_kode_users', $id);
+
+        if (!$existingRecord) {
+            $this->UserNilaiModel->insert([
+                'nilai' => $nilai,
+                'id_kode_users' => $id,
+            ]);
+        }
+        $data = [
+            'title' => 'Bank Soal',
+            'nilai' => $nilai,
+            'ujian' => $ujian,
+            'soalUjian' =>  $soals,
+            'selected_answers' => $selectedAnswers,
+            'id' => $id
+        ];
+        return view('bankSoal/mahasiswa/hasilUjian', $data);
     }
 }

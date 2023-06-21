@@ -53,7 +53,7 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-            <a href="/ujian/mulai_ujian/<?= $ujian['id']; ?>" class="btn btn-primary">Mulai Ujian</a>
+            <a href="/ujian/mulai_ujian/<?= $id_kode_users; ?>" class="btn btn-primary">Mulai Ujian</a>
         </div>
     </div>
 </div>

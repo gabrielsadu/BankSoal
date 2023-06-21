@@ -10,16 +10,16 @@ class KodeUsersModel extends Model
     protected $useTimestamps = true;
     protected $allowedFields = ['kode_ujian', 'id_users'];
 
-    public function getKodeUsers($id = false)
+    public function getKode($id = false)
     {
         if ($id == false) {
             return $this->findAll();
         }
 
-        return $this->where(['id_users' => $id])->first();
+        return $this->where(['id' => $id])->findColumn('kode_ujian')[0];
     }
-    public function getKodeUsersId($id)
+    public function getKodeUsersId($id_users, $kode_ujian)
     {
-        return $this->where(['id_users' => $id])->findColumn('id')[0];
+        return $this->where(['id_users' => $id_users])->where(['kode_ujian' => $kode_ujian])->findColumn('id')[0];
     }
 }

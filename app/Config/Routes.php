@@ -63,6 +63,7 @@ $routes->group('ujian', ['filter' => 'role:administrator,user'], static function
     $routes->post('mendaftar_ujian', 'Mahasiswa::mendaftarUjian');
     $routes->get('detail_ujian/(:num)', 'Mahasiswa::detailUjian/$1');
     $routes->get('mulai_ujian/(:num)', 'Mahasiswa::mulaiUjian/$1');
+    $routes->post('hasil_ujian/(:num)', 'Mahasiswa::hasilUjian/$1');
 });
 
 
