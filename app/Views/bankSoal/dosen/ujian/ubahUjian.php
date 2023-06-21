@@ -83,7 +83,7 @@
                 <div class="row mb-3">
                     <label for="pilih_soal_dari_bab" class="col-sm-2 col-form-label">Pilih Soal Dari Bab</label>
                     <div class="col">
-                        <ul class="list-group" id="pilih_soal_dari_bab">
+                        <ul class="list-group list-group-flush" id="pilih_soal_dari_bab">
                             <?php foreach ($bab as $bab) : ?>
                                 <?php if ($bab['id_mata_kuliah'] == $id) : ?>
                                     <?php
@@ -107,14 +107,14 @@
                 <div class="row mb-3">
                     <label for="random" class="col-sm-2 col-form-label">Acak Soal</label>
                     <div class="col-sm-2 mt-4">
-                        <input class="form-check-input me-1" type="checkbox" id="random" name="random" <?= $ujian['random'] == 0 ? '' : 'checked' ?>>
+                        <input class="form-check-input col-sm-3" type="checkbox" id="random" name="random" <?= $ujian['random'] == 0 ? '' : 'checked' ?>>
                         <br>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
                     <div class="col-sm-2 mt-4">
-                        <input class="form-check-input me-1" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= null != ($ujian['ruang_ujian']) ? 'checked' : '' ?>>
+                        <input class="form-check-input col-sm-3" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= null != ($ujian['ruang_ujian']) ? 'checked' : '' ?>>
                         <br>
                     </div>
                 </div>

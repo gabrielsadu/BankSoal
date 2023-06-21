@@ -83,7 +83,7 @@
                 <div class="row mb-3">
                     <label for="pilih_soal_dari_bab" class="col-sm-2 col-form-label">Pilih Soal Dari Bab</label>
                     <div class="col">
-                        <ul class="list-group" id="pilih_soal_dari_bab">
+                        <ul class="list-group list-group-flush" id="pilih_soal_dari_bab">
                             <?php foreach ($bab as $bab) : ?>
                                 <?php if ($bab['id_mata_kuliah'] == $id) : ?>
                                     <li class="list-group-item">
@@ -97,15 +97,15 @@
                 </div>
                 <div class="row mb-3">
                     <label for="random" class="col-sm-2 col-form-label">Acak Soal</label>
-                    <div class="col-sm-2 mt-4">
-                        <input class="form-check-input me-1" type="checkbox" id="random" name="random" checked>
+                    <div class="col-sm-2 mt-2">
+                        <input class="form-check-input col-sm-3" type="checkbox" id="random" name="random" checked>
                         <br>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
-                    <div class="col-sm-2 mt-4">
-                        <input class="form-check-input me-1" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian">
+                    <div class="col-sm-2 mt-3">
+                        <input class="form-check-input col-sm-3" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian">
                         <br>
                     </div>
                 </div>

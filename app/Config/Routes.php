@@ -47,8 +47,8 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
     $routes->post('(:num)/bab/(:num)/update_soal/(:num)', 'Soal::updateSoal/$1/$2/$3');
     $routes->delete('(:num)/bab/(:num)/hapus_soal/(:num)', 'Soal::hapusSoal/$1/$2/$3');
     $routes->get('(:num)/bab/(:num)/detail_soal/(:num)', 'Soal::detailSoal/$1/$2/$3');
-    $routes->post('/uploadGambar', 'Soal::uploadGambar');
-    $routes->post('/deleteGambar', 'Soal::deleteGambar');
+    $routes->post('upload_gambar', 'Soal::uploadGambar');
+    $routes->post('delete_gambar', 'Soal::deleteGambar');
 
     $routes->get('(:num)/tambah_ujian', 'Ujian::tambahUjian/$1');
     $routes->post('(:num)/simpan_ujian', 'Ujian::simpanUjian/$1');
