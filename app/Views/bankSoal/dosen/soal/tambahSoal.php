@@ -94,7 +94,7 @@
                     }
                 },
                 tabsize: 2,
-                height: height // Set the height conditionally
+                height: height
             });
         });
     });
