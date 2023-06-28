@@ -20,6 +20,8 @@ class KodeUsersModel extends Model
     }
     public function getKodeUsersId($id_users, $kode_ujian)
     {
-        return $this->where(['id_users' => $id_users])->where(['kode_ujian' => $kode_ujian])->findColumn('id')[0];
+        return empty($this->where(['id_users' => $id_users])
+            ->where(['kode_ujian' => $kode_ujian])->findColumn('id')) ? null : $this
+            ->where(['id_users' => $id_users])->where(['kode_ujian' => $kode_ujian])->findColumn('id')[0];
     }
 }

@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-8">
             <h2 class="my-3">Ubah Bab</h2>
-            <a href="/banksoal/<?= $id; ?>">Kembali ke Daftar Bab</a>
+            <a class="btn btn-primary" href="/banksoal/<?= $id; ?>">Kembali ke Daftar Bab</a>
             <br><br>
             <form action="/banksoal/<?= $id; ?>/update_bab/<?= $bab['id']; ?>" method="post">
                 <?= csrf_field(); ?>

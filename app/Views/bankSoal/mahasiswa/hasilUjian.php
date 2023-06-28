@@ -6,7 +6,7 @@
         <div class="col-12">
             <h2 class="my-3">Hasil Ujian</h2>
             <br><br>
-            <table class="table table-borderless d-flex justify-content-center">
+            <table class="table table-borderless d-flex justify-content-center" style="background-color: #f4f6f9;">
                 <thead>
                     <tr>
                         <th scope="col" style="width: 20%"></th>
@@ -16,23 +16,23 @@
                 <tbody>
                     <tr>
                         <th scope="col">
-                            <h2>Nama Ujian</h2>
+                            <h3>Nama Ujian</h3>
                         </th>
                         <th scope="col">
-                            <h2>: <?= $ujian['nama_ujian'] ?></h2>
+                            <h3>: <?= $ujian['nama_ujian'] ?></h3>
                         </th>
                     </tr>
                     <tr>
                         <th scope="col">
-                            <h2>Nilai</h2>
+                            <h3>Nilai</h3>
                         </th>
                         <th scope="col">
-                            <h2>: <?= $nilai ?> %</h2>
+                            <h3>: <?= $nilai ?> %</h3>
                         </th>
                     </tr>
                     <tr>
                         <th scope="col"><br>
-                            <a href="/ujian/masuk_ujian" class="btn btn-primary">Kembali</a>
+                            <a href="/ujian" class="btn btn-primary">Kembali</a>
                         </th>
                     </tr>
                 </tbody>

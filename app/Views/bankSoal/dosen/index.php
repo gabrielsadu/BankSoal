@@ -3,8 +3,8 @@
 <?= $this->section('content'); ?>
 <div class="container">
     <div class="row">
-        <div class="col"></br>
-            <h1 class="mt-2">Bank Soal</h1>
+        <div class="col">
+            <h2 class="mt-2">Bank Soal</h1>
             </br></br>
             <div class="col d-flex justify-content-center">
                 <?php foreach ($mataKuliah as $k) : ?>

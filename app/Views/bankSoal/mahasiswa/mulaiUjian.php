@@ -4,11 +4,11 @@
 <div class="container">
     <h1 class="mt-2"><?= $ujian['nama_ujian'] ?></h1><br>
     <h2 class="mt-2">Sisa Waktu: <span id="countdown"></span></h2>
-    <form action="/ujian/hasil_ujian/<?= $id ?>" method="post">
+    <form action="/ujian/hasil_ujian/<?= $id ?>" method="post" id="ujianForm">
         <div class="row">
-            <div class="col-9   ">
+            <div class="col-9">
                 <?= csrf_field() ?>
-                <table class="table table-borderless">
+                <table class="table table-borderless" style="background-color: #f4f6f9;">
                     <thead>
                         <th scope="col" style="width: 10%"></th>
                         <th scope="col" style="width: 90%"></th>
@@ -34,29 +34,37 @@
                             <tr>
                                 <td></td>
                                 <td>
-                                    <input class="form-check-input" type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_a" <?php if ($selectedAnswer === 'jawaban_a') echo 'checked'; ?>>
-                                    A. <?= $k['jawaban_a'] ?>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_a" <?php if ($selectedAnswer === 'jawaban_a') echo 'checked'; ?>> A
+                                    </label>
+                                    <label class="form-check-label ml-2" for="checkbox_bab_<?= $k['id'] ?>"><?= $k['jawaban_a'] ?></label>
                                 </td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>
-                                    <input class="form-check-input" type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_b" <?php if ($selectedAnswer === 'jawaban_b') echo 'checked'; ?>>
-                                    B. <?= $k['jawaban_b'] ?>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_b" <?php if ($selectedAnswer === 'jawaban_b') echo 'checked'; ?>> B
+                                    </label>
+                                    <label class="form-check-label ml-2" for="checkbox_bab_<?= $k['id'] ?>"><?= $k['jawaban_b'] ?></label>
                                 </td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>
-                                    <input class="form-check-input" type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_c" <?php if ($selectedAnswer === 'jawaban_c') echo 'checked'; ?>>
-                                    C. <?= $k['jawaban_c'] ?>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_c" <?php if ($selectedAnswer === 'jawaban_c') echo 'checked'; ?>> C
+                                    </label>
+                                    <label class="form-check-label ml-2" for="checkbox_bab_<?= $k['id'] ?>"><?= $k['jawaban_c'] ?></label>
                                 </td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>
-                                    <input class="form-check-input" type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_d" <?php if ($selectedAnswer === 'jawaban_d') echo 'checked'; ?>>
-                                    D. <?= $k['jawaban_d'] ?>
+                                    <label class="btn btn-outline-primary">
+                                        <input type="radio" name="jawaban[<?= $k['id'] ?>][]" value="jawaban_d" <?php if ($selectedAnswer === 'jawaban_d') echo 'checked'; ?>> D
+                                    </label>
+                                    <label class="form-check-label ml-2" for="checkbox_bab_<?= $k['id'] ?>"><?= $k['jawaban_d'] ?></label>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -65,9 +73,7 @@
             </div>
             <div class="col">
                 <?= $pager->links('soal', 'ujian_pagination'); ?>
-                <br>
                 <input type="hidden" name="timer" id="timerInput">
-                <button type="submit" class="btn btn-primary">Submit Jawaban</button>
             </div>
         </div>
     </form>
@@ -117,6 +123,15 @@
         function updateCountdown() {
             // Calculate the remaining time
             var remainingTime = endTime - Date.now();
+            // Check if the countdown has reached 0
+            if (remainingTime < 0) {
+                // Stop the countdown
+                clearInterval(countdown);
+
+                // Auto-submit the form
+                document.getElementById('ujianForm').submit();
+                return;
+            }
             var minutes = Math.floor(remainingTime / (60 * 1000));
             var seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
 
@@ -125,15 +140,6 @@
 
             // Display the countdown timer
             countdownElement.textContent = formattedTime;
-
-            // Check if the countdown has reached 0
-            if (remainingTime < 0) {
-                // Stop the countdown
-                clearInterval(countdown);
-
-                // Auto-submit the form
-                document.getElementById('myForm').submit();
-            }
         }
     }
 

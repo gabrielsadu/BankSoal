@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
             <h2 class="my-3">Ubah Ujian</h2>
-            <a href="/banksoal/<?= $id; ?>">Kembali ke Daftar Bab</a>
+            <a class="btn btn-primary" href="/banksoal/<?= $id; ?>">Kembali ke Daftar Bab</a>
             <br><br>
             <form action="/banksoal/<?= $id; ?>/update_ujian/<?= $ujian['id']; ?>" method="post">
                 <?= csrf_field(); ?>
@@ -95,9 +95,10 @@
                                         }
                                     }
                                     ?>
-                                    <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="checkbox" value="<?= $bab['id'] ?>" name="bab[]" <?= $checked ?>>
-                                        <label class="form-check-label" for="checkbox_bab_<?= $bab['id'] ?>"><?= $bab['nama_bab'] ?></label>
+                                    <li class="list-group-item border-0" style="background-color: #f4f6f9;">
+                                        <div><input class="form-check-input me-1" type="checkbox" value="<?= $bab['id'] ?>" name="bab[]" <?= $checked ?>>
+                                            <label class="form-check-label ml-2" for="checkbox_bab_<?= $bab['id'] ?>"><?= $bab['nama_bab'] ?></label>
+                                        </div>
                                     </li>
                                 <?php endif; ?>
                             <?php endforeach; ?>

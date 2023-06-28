@@ -30,7 +30,7 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
-
+$routes->post('save-code', 'Ujian::saveCode');
 $routes->group('banksoal', ['filter' => 'role:administrator'], static function ($routes) {
     $routes->get('/', 'BankSoal::index');
     $routes->get('(:num)', 'BankSoal::daftarBab/$1');
@@ -59,7 +59,7 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
 });
 
 $routes->group('ujian', ['filter' => 'role:administrator,user'], static function ($routes) {
-    $routes->get('masuk_ujian', 'Mahasiswa::masukUjian');
+    $routes->get('/', 'Mahasiswa::masukUjian');
     $routes->post('mendaftar_ujian', 'Mahasiswa::mendaftarUjian');
     $routes->get('detail_ujian/(:num)', 'Mahasiswa::detailUjian/$1');
     $routes->get('mulai_ujian/(:num)', 'Mahasiswa::mulaiUjian/$1');

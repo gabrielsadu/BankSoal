@@ -6,6 +6,7 @@ use App\Models\MataKuliahModel;
 use App\Models\BabModel;
 use App\Models\SoalModel;
 use App\Models\UjianModel;
+use App\Models\KodeUjianModel;
 use App\Models\BabUntukUjianModel;
 use Config\Database;
 
@@ -15,6 +16,7 @@ class Ujian extends BaseController
     protected $BabModel;
     protected $SoalModel;
     protected $UjianModel;
+    protected $KodeUjianModel;
     protected $BabUntukUjianModel;
     protected $helpers = ['form'];
     public function __construct()
@@ -23,6 +25,7 @@ class Ujian extends BaseController
         $this->BabModel = new BabModel();
         $this->SoalModel = new SoalModel();
         $this->UjianModel = new UjianModel();
+        $this->KodeUjianModel = new KodeUjianModel();
         $this->BabUntukUjianModel = new BabUntukUjianModel();
     }
 
@@ -201,7 +204,8 @@ class Ujian extends BaseController
             'id_mata_kuliah' => $id_mata_kuliah,
             'ujian' => $this->UjianModel->getUjian($id),
             'soal_model' => $this->SoalModel->getSoal(),
-            'bab_data' => $babData
+            'bab_data' => $babData,
+            'kode_ujian' => $this->KodeUjianModel->getKodeUjianByUjian($id),
         ];
 
         if (empty($data['ujian'])) {
@@ -209,5 +213,21 @@ class Ujian extends BaseController
         }
 
         return view('bankSoal/dosen/ujian/detailUjian', $data);
+    }
+    public function saveCode()
+    {
+        $kode_ujian = $this->request->getPost('kode_ujian');
+        $id_ujian = $this->request->getPost('id_ujian');
+
+        // Insert the code into the KodeUjianModel
+        $kodeUjianModel = new KodeUjianModel();
+        $data = [
+            'kode_ujian' => $kode_ujian,
+            'id_ujian' => $id_ujian
+        ];
+        $kodeUjianModel->insert($data);
+
+        // Send a response indicating success
+        return $this->response->setJSON(['success' => true]);
     }
 }

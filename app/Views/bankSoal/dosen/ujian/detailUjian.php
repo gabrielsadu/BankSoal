@@ -4,8 +4,8 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1 class="mt-2"><?= $ujian['nama_ujian'] ?></h1><br>
-            <a href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Halaman Sebelumnya</a><br><br>
+            <h2 class="mt-2"><?= $ujian['nama_ujian'] ?></h2><br>
+            <a class="btn btn-primary" href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Halaman Sebelumnya</a><br><br>
             <table class="table">
                 <thead>
                     <tr>
@@ -52,6 +52,16 @@
                             <td><?= $ujian['ruang_ujian'] ?></td>
                         </tr>
                     <?php endif; ?>
+                    <tr>
+                        <td>Kode Ujian</td>
+                        <td id="codeCell">
+                            <?php if ($kode_ujian) : ?>
+                                <?= $kode_ujian; ?>
+                            <?php else : ?>
+                                <a id="generateButton" class="btn btn-primary" href="#" role="button">Generate Kode</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <table class="table">
@@ -83,4 +93,33 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('generateButton').addEventListener('click', function() {
+        var randomCode = generateRandomCode();
+        this.textContent = randomCode;
+        document.getElementById('codeCell').textContent = randomCode;
+        // Send an AJAX request to save the code
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // Code successfully saved
+                console.log('Code saved:', randomCode);
+            }
+        };
+        xhttp.open('POST', '/save-code', true);
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhttp.send('kode_ujian=' + encodeURIComponent(randomCode) + '&id_ujian=' + encodeURIComponent(<?php echo $ujian['id']; ?>));
+
+    });
+
+    function generateRandomCode() {
+        var charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var code = '';
+        for (var i = 0; i < 8; i++) {
+            var randomIndex = Math.floor(Math.random() * charset.length);
+            code += charset[randomIndex];
+        }
+        return code;
+    }
+</script>
 <?= $this->endSection(); ?>

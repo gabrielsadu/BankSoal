@@ -3,10 +3,10 @@
 <?= $this->section('content'); ?>
 <div class="container">
     <div class="row">
-        <h2 class="my-3">Tambah Soal</h2>
-    </div><br>
-    <div class="row">
-        <a href="/banksoal/<?= $id_mata_kuliah; ?>/bab/<?= $id; ?>" class="btn btn-primary">Kembali ke Daftar Soal</a>
+        <div class="col">
+            <h2 class="my-3">Tambah Soal</h2>
+            <a href="/banksoal/<?= $id_mata_kuliah; ?>/bab/<?= $id; ?>" class="btn btn-primary">Kembali ke Daftar Soal</a>
+        </div>
     </div>
     <br><br>
     <div class="row-12">
@@ -91,6 +91,11 @@
                     },
                     onMediaDelete: function(target) {
                         $.delete(target[0].src);
+                    },
+                    onPaste: function(e) {
+                        var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                        e.preventDefault();
+                        document.execCommand('insertText', false, bufferText);
                     }
                 },
                 tabsize: 2,

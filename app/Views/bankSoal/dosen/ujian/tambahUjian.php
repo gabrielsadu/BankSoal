@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
             <h2 class="my-3">Tambah Ujian</h2>
-            <a href="/banksoal/<?= $id; ?>">Kembali ke Halaman Sebelumnya</a>
+            <a class="btn btn-primary" href="/banksoal/<?= $id; ?>">Kembali ke Halaman Sebelumnya</a>
             <br><br>
             <form action="/banksoal/<?= $id; ?>/simpan_ujian" method="post">
                 <?= csrf_field(); ?>
@@ -86,9 +86,11 @@
                         <ul class="list-group list-group-flush" id="pilih_soal_dari_bab">
                             <?php foreach ($bab as $bab) : ?>
                                 <?php if ($bab['id_mata_kuliah'] == $id) : ?>
-                                    <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="checkbox" value="<?= $bab['id'] ?>" name="bab[]">
-                                        <label class="form-check-label" for="checkbox_bab_<?= $bab['id'] ?>"><?= $bab['nama_bab'] ?></label>
+                                    <li class="list-group-item border-0" style="background-color: #f4f6f9;">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" value="<?= $bab['id'] ?>" name="bab[]">
+                                            <label class="form-check-label ml-2" for="checkbox_bab_<?= $bab['id'] ?>">BAB <?= $bab['nomor_bab'] ?> - <?= $bab['nama_bab'] ?></label>
+                                        </div>
                                     </li>
                                 <?php endif; ?>
                             <?php endforeach; ?>
