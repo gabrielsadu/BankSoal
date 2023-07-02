@@ -98,6 +98,13 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="tunjukkan_nilai" class="col-sm-2 col-form-label">Tunjukkan Nilai</label>
+                    <div class="col-sm-2 mt-2">
+                        <input class="form-check-input col-sm-3" type="checkbox" id="tunjukkan_nilai" name="tunjukkan_nilai" checked>
+                        <br>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <label for="random" class="col-sm-2 col-form-label">Acak Soal</label>
                     <div class="col-sm-2 mt-2">
                         <input class="form-check-input col-sm-3" type="checkbox" id="random" name="random" checked>

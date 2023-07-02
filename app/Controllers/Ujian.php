@@ -73,6 +73,7 @@ class Ujian extends BaseController
         $waktu_buka_ujian = $this->request->getVar('waktu_buka_ujian');
         $waktu_tutup_ujian = $this->request->getVar('waktu_tutup_ujian');
         $random = isset($_POST['random']) ? 1 : 0;
+        $tunjukkan_nilai = isset($_POST['tunjukkan_nilai']) ? 1 : 0;
         $pilih_soal = $this->request->getpost('bab');
         $this->UjianModel->insert([
             'nama_ujian' => $this->request->getVar('nama_ujian'),
@@ -83,6 +84,7 @@ class Ujian extends BaseController
             'nilai_minimum_kelulusan' => $this->request->getVar('nilai_minimum_kelulusan'),
             'jumlah_soal' => $this->request->getVar('jumlah_soal'),
             'random' => $random,
+            'tunjukkan_nilai' => $tunjukkan_nilai,
             'ruang_ujian' => $this->request->getVar('ruang_ujian'),
             'id_mata_kuliah' => $id
         ]);
@@ -126,6 +128,7 @@ class Ujian extends BaseController
             $ruang_ujian = null;
         }
         $random = (null !== ($this->request->getVar('random')) ? 1 : 0);
+        $tunjukkan_nilai = (null !== ($this->request->getVar('tunjukkan_nilai')) ? 1 : 0);
         $waktu_buka_ujian = $this->request->getVar('waktu_buka_ujian');
         $waktu_tutup_ujian = $this->request->getVar('waktu_tutup_ujian');
         $ujianLama = $this->UjianModel->getUjian($id);
@@ -139,6 +142,7 @@ class Ujian extends BaseController
             && $ujianLama['ruang_ujian'] == $this->request->getVar('ruang_ujian')
             && $ujianLama['jumlah_soal'] == $this->request->getVar('jumlah_soal')
             && $ujianLama['random'] == $this->request->getVar('random')
+            && $ujianLama['tunjukkan_nilai'] == $this->request->getVar('tunjukkan_nilai')
         ) {
             return redirect()->to('/banksoal/' . $id_mata_kuliah . '/ubah_ujian/' . $id)->withInput();
         }
@@ -153,6 +157,7 @@ class Ujian extends BaseController
             'ruang_ujian' => $ruang_ujian,
             'jumlah_soal' => $this->request->getVar('jumlah_soal'),
             'random' => $random,
+            'tunjukkan_nilai' => $tunjukkan_nilai,
             'id_mata_kuliah' => $id_mata_kuliah
         ]);
 

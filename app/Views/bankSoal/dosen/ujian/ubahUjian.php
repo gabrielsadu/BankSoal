@@ -113,6 +113,13 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="tunjukkan_nilai" class="col-sm-2 col-form-label">Tunjukkan Nilai</label>
+                    <div class="col-sm-2 mt-4">
+                        <input class="form-check-input col-sm-3" type="checkbox" id="tunjukkan_nilai" name="tunjukkan_nilai" <?= $ujian['tunjukkan_nilai'] == 0 ? '' : 'checked' ?>>
+                        <br>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <label for="menggunakan_ruang_ujian" class="col-sm-2 col-form-label">Menggunakan Ruang Ujian</label>
                     <div class="col-sm-2 mt-4">
                         <input class="form-check-input col-sm-3" type="checkbox" id="menggunakan_ruang_ujian" name="menggunakan_ruang_ujian" <?= null != ($ujian['ruang_ujian']) ? 'checked' : '' ?>>

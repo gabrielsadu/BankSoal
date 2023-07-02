@@ -22,14 +22,16 @@
                             <h3>: <?= $ujian['nama_ujian'] ?></h3>
                         </th>
                     </tr>
-                    <tr>
-                        <th scope="col">
-                            <h3>Nilai</h3>
-                        </th>
-                        <th scope="col">
-                            <h3>: <?= $nilai ?> %</h3>
-                        </th>
-                    </tr>
+                    <?php if ($ujian['tunjukkan_nilai']) : ?>
+                        <tr>
+                            <th scope="col">
+                                <h3>Nilai</h3>
+                            </th>
+                            <th scope="col">
+                                <h3>: <?= $nilai ?> %</h3>
+                            </th>
+                        </tr>
+                    <?php endif; ?>
                     <tr>
                         <th scope="col"><br>
                             <a href="/ujian" class="btn btn-primary">Kembali</a>

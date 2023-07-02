@@ -53,6 +53,10 @@
                         </tr>
                     <?php endif; ?>
                     <tr>
+                        <td>Tunjukkan Nilai</td>
+                        <td><?= ($ujian['tunjukkan_nilai']) === 0 ? 'Tidak' : 'Ya'; ?></td>
+                    </tr>
+                    <tr>
                         <td>Kode Ujian</td>
                         <td id="codeCell">
                             <?php if ($kode_ujian) : ?>
