@@ -6,7 +6,7 @@
 </style>
 <nav aria-label="Page navigation">
     <div class="pagination">
-        <?php $pager->setSurroundCount(10) ?>
+        <?php $pager->setSurroundCount(50) ?>
         <?php
         $counter = 0; // Counter to track the number of buttons
         foreach ($pager->links() as $link) :
@@ -30,7 +30,7 @@
     <?php $pager->setSurroundCount(0) ?>
     <ul class="pagination">
     <?php if ($pager->hasNext() && !$pager->hasPrevious()) : ?>
-        <li class="page-item ml-auto"">
+        <li class="page-item" style="margin-left:138px;">
             <a class="page-link" href="<?= $pager->getNext() ?>" aria-label="<?= lang('Pager.next') ?>">
                 <span aria-hidden="true">Selanjutnya</span>
             </a>
@@ -41,7 +41,7 @@
                 <span aria-hidden="true">Sebelumnya</span>
             </a>
         </li>
-        <li class="page-item ml-auto"">
+        <li class="page-item" style="margin-left:60px;">
             <button type="submit" class="btn btn-primary">Selesai</button>
         </li>
     <?php elseif ($pager->hasNext() && $pager->hasPrevious()) : ?>
@@ -50,7 +50,7 @@
                 <span aria-hidden="true">Sebelumnya</span>
             </a>
         </li>
-        <li class="page-item ml-auto"">
+        <li class="page-item" style="margin-left:25px;">
             <a class="page-link" href="<?= $pager->getNext() ?>" aria-label="<?= lang('Pager.next') ?>">
                 <span aria-hidden="true">Selanjutnya</span>
             </a>

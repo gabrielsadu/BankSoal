@@ -39,7 +39,6 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
     $routes->get('(:num)/ubah_bab/(:num)', 'BankSoal::ubahBab/$1/$2');
     $routes->post('(:num)/update_bab/(:num)', 'BankSoal::updateBab/$1/$2');
     $routes->delete('(:num)/hapus_bab/(:num)', 'BankSoal::hapusBab/$1/$2');
-
     $routes->get('(:num)/bab/(:num)', 'Soal::daftarSoal/$1/$2');
     $routes->get('(:num)/bab/(:num)/tambah_soal', 'Soal::tambahSoal/$1/$2');
     $routes->post('(:num)/bab/(:num)/simpan_soal', 'Soal::simpanSoal/$1/$2');
@@ -49,7 +48,6 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
     $routes->get('(:num)/bab/(:num)/detail_soal/(:num)', 'Soal::detailSoal/$1/$2/$3');
     $routes->post('upload_gambar', 'Soal::uploadGambar');
     $routes->post('delete_gambar', 'Soal::deleteGambar');
-
     $routes->get('(:num)/tambah_ujian', 'Ujian::tambahUjian/$1');
     $routes->post('(:num)/simpan_ujian', 'Ujian::simpanUjian/$1');
     $routes->get('(:num)/ubah_ujian/(:num)', 'Ujian::ubahUjian/$1/$2');
@@ -57,16 +55,14 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
     $routes->delete('(:num)/hapus_ujian/(:num)', 'Ujian::hapusUjian/$1/$2');
     $routes->get('(:num)/detail_ujian/(:num)', 'Ujian::detailUjian/$1/$2');
 });
-
 $routes->group('ujian', ['filter' => 'role:administrator,user'], static function ($routes) {
     $routes->get('/', 'Mahasiswa::masukUjian');
     $routes->post('mendaftar_ujian', 'Mahasiswa::mendaftarUjian');
     $routes->get('detail_ujian/(:num)', 'Mahasiswa::detailUjian/$1');
     $routes->get('mulai_ujian/(:num)', 'Mahasiswa::mulaiUjian/$1');
     $routes->post('hasil_ujian/(:num)', 'Mahasiswa::hasilUjian/$1');
+    $routes->post('simpan_jawaban_dipilih', 'Mahasiswa::simpanJawabanDipilih');
 });
-
-
 
 /*
  * --------------------------------------------------------------------

@@ -11,6 +11,7 @@ use App\Models\BabUntukUjianModel;
 use App\Models\KodeUsersModel;
 use App\Models\UserSoalUjianModel;
 use App\Models\UserNilaiModel;
+use App\Models\CountdownModel;
 use Config\Database;
 
 class Mahasiswa extends BaseController
@@ -24,6 +25,7 @@ class Mahasiswa extends BaseController
     protected $KodeUsersModel;
     protected $UserSoalUjianModel;
     protected $UserNilaiModel;
+    protected $CountdownModel;
     protected $helpers = ['form', 'auth'];
     public function __construct()
     {
@@ -36,6 +38,7 @@ class Mahasiswa extends BaseController
         $this->KodeUsersModel = new KodeUsersModel();
         $this->UserSoalUjianModel = new UserSoalUjianModel();
         $this->UserNilaiModel = new UserNilaiModel();
+        $this->CountdownModel = new CountdownModel();
     }
 
     public function masukUjian()
@@ -126,12 +129,23 @@ class Mahasiswa extends BaseController
             ]);
         }
     }
+    public function simpanJawabanDipilih()
+    {
+        $this->UserSoalUjianModel->where('id_kode_users', $this->request->getPost('id_kode_users'))
+            ->where('id_soal', $this->request->getPost('id_soal'))
+            ->set(['jawaban_dipilih' => $this->request->getPost('jawaban_dipilih')])
+            ->update();
+
+        // Return a response if needed
+        return $this->response->setJSON(['success' => true]);
+    }
     public function mulaiUjian($id)
     {
         $kodeUjian = $this->KodeUsersModel->getKode($id);
         $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
         Mahasiswa::randomize($id);
-        $selectedQuestionIds = $this->UserSoalUjianModel->where('id_kode_users', $id)->findColumn('id_soal');
+        $selectedQuestionIds = $this->UserSoalUjianModel->getSoalId($id);
+        $selectedAnswers = $this->UserSoalUjianModel->getSoalIdAndJawabanDipilih($id);
         $currentPage = $this->request->getVar('page_soal') ? $this->request->getVar('page_soal') : 1;
         $data = [
             'title' => 'Bank Soal',
@@ -139,6 +153,7 @@ class Mahasiswa extends BaseController
             'soal' =>  $this->SoalModel->whereIn('id', $selectedQuestionIds)->paginate(1, 'soal'),
             'pager' => $this->SoalModel->whereIn('id', $selectedQuestionIds)->pager,
             'currentPage' => $currentPage,
+            'jawaban' => $selectedAnswers,
             'id' => $id
         ];
 
