@@ -7,14 +7,32 @@ use CodeIgniter\Model;
 class CountdownModel extends Model
 {
     protected $table = 'countdown';
-    protected $allowedFields = ['id_kode_users', 'start_time', 'remaining_duration'];
+    protected $primaryKey = 'id_kode_users';
+    protected $allowedFields = ['id_kode_users', 'remaining_duration'];
 
-    public function getCoutdown($id = false)
+    public function getCountdown($id = false)
     {
         if ($id == false) {
             return $this->findAll();
         }
 
-        return $this->where(['id_kode_users' => $id])->select('start_time', 'remaining_duration')->findAll();
+        return $this->where(['id_kode_users' => $id])->findColumn('remaining_duration')[0];
+    }
+    public function saveRemainingDuration($idKodeUsers, $remainingDuration)
+    {
+        $existingRow = null !== $this->where('id_kode_users', $idKodeUsers) ? $this->where('id_kode_users', $idKodeUsers) : '';
+
+        if ($existingRow) {
+            // If the id_kode_users exists, update the remaining_duration
+            $this->update($idKodeUsers, [
+                'remaining_duration' => $remainingDuration
+            ]);
+        } else {
+            // If the id_kode_users doesn't exist, insert a new row
+            $this->insert([
+                'id_kode_users' => $idKodeUsers,
+                'remaining_duration' => $remainingDuration
+            ]);
+        }
     }
 }

@@ -62,6 +62,7 @@ $routes->group('ujian', ['filter' => 'role:administrator,user'], static function
     $routes->get('mulai_ujian/(:num)', 'Mahasiswa::mulaiUjian/$1');
     $routes->post('hasil_ujian/(:num)', 'Mahasiswa::hasilUjian/$1');
     $routes->post('simpan_jawaban_dipilih', 'Mahasiswa::simpanJawabanDipilih');
+    $routes->post('save_remaining_duration', 'Mahasiswa::saveRemainingDuration');
 });
 
 /*

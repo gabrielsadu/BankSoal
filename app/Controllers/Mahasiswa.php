@@ -12,6 +12,7 @@ use App\Models\KodeUsersModel;
 use App\Models\UserSoalUjianModel;
 use App\Models\UserNilaiModel;
 use App\Models\CountdownModel;
+use CodeIgniter\API\ResponseTrait;
 use Config\Database;
 
 class Mahasiswa extends BaseController
@@ -27,6 +28,10 @@ class Mahasiswa extends BaseController
     protected $UserNilaiModel;
     protected $CountdownModel;
     protected $helpers = ['form', 'auth'];
+
+    
+    use ResponseTrait;
+
     public function __construct()
     {
         $this->MataKuliahModel = new MataKuliahModel();
@@ -136,6 +141,16 @@ class Mahasiswa extends BaseController
             ->set(['jawaban_dipilih' => $this->request->getPost('jawaban_dipilih')])
             ->update();
 
+        return $this->response->setJSON(['success' => true]);
+    }
+
+    public function saveRemainingDuration()
+    {
+        $idKodeUsers = $this->request->getPost('idKodeUsers');
+        $remainingDuration = $this->request->getPost('remainingDuration');
+
+        $this->CountdownModel->saveRemainingDuration($idKodeUsers, $remainingDuration);
+
         // Return a response if needed
         return $this->response->setJSON(['success' => true]);
     }
@@ -154,6 +169,7 @@ class Mahasiswa extends BaseController
             'pager' => $this->SoalModel->whereIn('id', $selectedQuestionIds)->pager,
             'currentPage' => $currentPage,
             'jawaban' => $selectedAnswers,
+            'serverTime' => date("H:i:s"),
             'id' => $id
         ];
 
@@ -164,7 +180,7 @@ class Mahasiswa extends BaseController
         $kodeUjian = $this->KodeUsersModel->getKode($id);
         $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
         $ujian = $this->UjianModel->getUjian($idUjian);
-        $soals_id = $this->UserSoalUjianModel->getUserSoalUjian($id);
+        $soals_id = $this->UserSoalUjianModel->getSoalId($id);
         $soals = $this->SoalModel->whereIn('id', $soals_id)->findAll();
         $nilai = [];
         /** @var string $cookie_data */
