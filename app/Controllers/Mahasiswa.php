@@ -29,7 +29,7 @@ class Mahasiswa extends BaseController
     protected $CountdownModel;
     protected $helpers = ['form', 'auth'];
 
-    
+
     use ResponseTrait;
 
     public function __construct()
@@ -180,20 +180,24 @@ class Mahasiswa extends BaseController
         $kodeUjian = $this->KodeUsersModel->getKode($id);
         $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
         $ujian = $this->UjianModel->getUjian($idUjian);
-        $soals_id = $this->UserSoalUjianModel->getSoalId($id);
-        $soals = $this->SoalModel->whereIn('id', $soals_id)->findAll();
-        $nilai = [];
-        /** @var string $cookie_data */
-        $cookie_data = $this->request->getCookie('selected_answers');
-        $selectedAnswers = (array) json_decode($cookie_data);
+        $soalIdAndJawaban = $this->UserSoalUjianModel->getSoalIdAndJawabanDipilih($id);
+        $soalId = array_column($soalIdAndJawaban, 'id_soal');
+        $soals = $this->SoalModel->whereIn('id', $soalId)->findAll();
+        $jawabanDipilih = [];
 
         foreach ($soals as $soal) {
-            $jawaban = isset($selectedAnswers[$soal['id']]) ? $selectedAnswers[$soal['id']] : '';
+            $jawaban = null;
+            foreach ($soalIdAndJawaban as $jawaban) {
+                if ($jawaban['id_soal'] === $soal['id']) {
+                    $jawaban = $jawaban['jawaban_dipilih'];
+                    break;
+                }
+            }
             $isCorrect = ($jawaban === $soal['jawaban_benar']);
-            array_push($nilai, $isCorrect);
+            array_push($jawabanDipilih, $isCorrect);
         }
-
-        $nilai = (array_sum($nilai) / count($nilai)) * 100;
+        $jawabanBenar = array_sum($jawabanDipilih);
+        $nilai = ($jawabanBenar / count($jawabanDipilih)) * 100;
         $existingRecord = $this->UserNilaiModel->findColumn('id_kode_users', $id);
 
         if (!$existingRecord) {
@@ -207,7 +211,8 @@ class Mahasiswa extends BaseController
             'nilai' => $nilai,
             'ujian' => $ujian,
             'soalUjian' =>  $soals,
-            'selected_answers' => $selectedAnswers,
+            'soalIdAndJawaban' => $soalIdAndJawaban,
+            'jawabanBenar' => $jawabanBenar,
             'id' => $id
         ];
         return view('bankSoal/mahasiswa/hasilUjian', $data);

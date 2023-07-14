@@ -6,6 +6,7 @@
         <div class="col">
             <h2 class="mt-2"><?= $ujian['nama_ujian'] ?></h2><br>
             <a class="btn btn-primary" href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Halaman Sebelumnya</a><br><br>
+            <a class="btn btn-success" href="/banksoal/<?= $id_mata_kuliah; ?>/">Export Nilai ke Excel</a><br><br>
             <table class="table">
                 <thead>
                     <tr>

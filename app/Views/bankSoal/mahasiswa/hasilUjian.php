@@ -16,19 +16,27 @@
                 <tbody>
                     <tr>
                         <th scope="col">
-                            <h3>Nama Ujian</h3>
+                            <h4>Nama Ujian</h4>
                         </th>
                         <th scope="col">
-                            <h3>: <?= $ujian['nama_ujian'] ?></h3>
+                            <h4>: <?= $ujian['nama_ujian'] ?></h4>
                         </th>
                     </tr>
                     <?php if ($ujian['tunjukkan_nilai']) : ?>
                         <tr>
                             <th scope="col">
-                                <h3>Nilai</h3>
+                                <h4>Soal Benar</h4>
                             </th>
                             <th scope="col">
-                                <h3>: <?= $nilai ?> %</h3>
+                                <h4>: <?= $jawabanBenar ?> dari <?= $ujian['jumlah_soal'] ?> Soal</h4>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="col">
+                                <h4>Nilai</h4>
+                            </th>
+                            <th scope="col">
+                                <h4>: <?= $nilai ?> %</h4>
                             </th>
                         </tr>
                     <?php endif; ?>
@@ -46,7 +54,13 @@
             <?php
             $counter = 1;
             foreach ($soalUjian as $soal) :
-                $jawaban = isset($selected_answers[$soal['id']]) ? $selected_answers[$soal['id']] : '';
+                $jawaban = null;
+                foreach ($soalIdAndJawaban as $jawaban) {
+                    if ($jawaban['id_soal'] === $soal['id']) {
+                        $jawaban = $jawaban['jawaban_dipilih'];
+                        break;
+                    }
+                }
             ?>
                 <table class="table" style="margin-bottom: 0px;">
                     <thead>
@@ -56,7 +70,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="max-width: 800px;overflow:auto; word-wrap: break-word; white-space: pre-wrap;"><?= $soal['soal'] ?></td>
+                            <td><?= $soal['soal'] ?></td>
                         </tr>
                     </tbody>
                 </table>
