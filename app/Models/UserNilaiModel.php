@@ -8,14 +8,10 @@ class UserNilaiModel extends Model
 {
     protected $table = 'user_nilai';
     protected $useTimestamps = true;
-    protected $allowedFields = ['id_kode_users', 'nilai'];
+    protected $allowedFields = ['id', 'id_users', 'id_ujian', 'nilai'];
 
-    public function getNilai($id_kode_users)
+    public function getNilai($id_users, $id_ujian)
     {
-        if ($id_kode_users == false) {
-            return $this->findAll();
-        }
-
-        return $this->where(['id_kode_users' => $id_kode_users])->findColumn('nilai')[0];
+        return $this->where(['id_users' => $id_users, 'id_ujian' => $id_ujian])->first();
     }
 }

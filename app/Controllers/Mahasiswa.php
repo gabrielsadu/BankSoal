@@ -179,6 +179,7 @@ class Mahasiswa extends BaseController
     {
         $kodeUjian = $this->KodeUsersModel->getKode($id);
         $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
+        $idUsers = $this->KodeUsersModel->getUsers($id);
         $ujian = $this->UjianModel->getUjian($idUjian);
         $soalIdAndJawaban = $this->UserSoalUjianModel->getSoalIdAndJawabanDipilih($id);
         $soalId = array_column($soalIdAndJawaban, 'id_soal');
@@ -198,12 +199,15 @@ class Mahasiswa extends BaseController
         }
         $jawabanBenar = array_sum($jawabanDipilih);
         $nilai = ($jawabanBenar / count($jawabanDipilih)) * 100;
-        $existingRecord = $this->UserNilaiModel->findColumn('id_kode_users', $id);
+        $existingRecord = $this->UserNilaiModel->getNilai($idUsers, $idUjian);
 
-        if (!$existingRecord) {
+        if ($existingRecord && $existingRecord['nilai'] < $nilai) {
+            $this->UserNilaiModel->update($existingRecord['id'], ['nilai' => $nilai]);
+        } elseif (!$existingRecord) {
             $this->UserNilaiModel->insert([
-                'nilai' => $nilai,
-                'id_kode_users' => $id,
+                'id_users' => $idUsers,
+                'id_ujian' => $idUjian,
+                'nilai' => $nilai
             ]);
         }
         $data = [

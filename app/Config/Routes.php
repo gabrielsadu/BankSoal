@@ -31,7 +31,7 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->post('save-code', 'Ujian::saveCode');
-$routes->group('banksoal', ['filter' => 'role:administrator'], static function ($routes) {
+$routes->group('banksoal', ['filter' => 'role:dosen'], static function ($routes) {
     $routes->get('/', 'BankSoal::index');
     $routes->get('(:num)', 'BankSoal::daftarBab/$1');
     $routes->get('(:num)/tambah_bab', 'BankSoal::tambahBab/$1');
@@ -55,7 +55,7 @@ $routes->group('banksoal', ['filter' => 'role:administrator'], static function (
     $routes->delete('(:num)/hapus_ujian/(:num)', 'Ujian::hapusUjian/$1/$2');
     $routes->get('(:num)/detail_ujian/(:num)', 'Ujian::detailUjian/$1/$2');
 });
-$routes->group('ujian', ['filter' => 'role:administrator,user'], static function ($routes) {
+$routes->group('ujian', ['filter' => 'role:mahasiswa'], static function ($routes) {
     $routes->get('/', 'Mahasiswa::masukUjian');
     $routes->post('mendaftar_ujian', 'Mahasiswa::mendaftarUjian');
     $routes->get('detail_ujian/(:num)', 'Mahasiswa::detailUjian/$1');
