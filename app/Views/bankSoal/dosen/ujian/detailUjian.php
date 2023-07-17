@@ -6,7 +6,7 @@
         <div class="col">
             <h2 class="mt-2"><?= $ujian['nama_ujian'] ?></h2><br>
             <a class="btn btn-primary" href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Halaman Sebelumnya</a><br><br>
-            <a class="btn btn-success" href="/banksoal/<?= $id_mata_kuliah; ?>/">Export Nilai ke Excel</a><br><br>
+            <a id="exportExcel" class="btn btn-success" href="/banksoal/export/<?= $ujian['id']; ?>/" role="button">Export Nilai ke Excel</a>
             <table class="table">
                 <thead>
                     <tr>
@@ -99,22 +99,37 @@
     </div>
 </div>
 <script>
-    document.getElementById('generateButton').addEventListener('click', function() {
-        var randomCode = generateRandomCode();
-        this.textContent = randomCode;
-        document.getElementById('codeCell').textContent = randomCode;
+    var generateButton = document.getElementById('generateButton');
+
+    if (generateButton) {
+        generateButton.addEventListener('click', function() {
+            var randomCode = generateRandomCode();
+            this.textContent = randomCode;
+            document.getElementById('codeCell').textContent = randomCode;
+            // Send an AJAX request to save the code
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Code successfully saved
+                    console.log('Code saved:', randomCode);
+                }
+            };
+            xhttp.open('POST', '/ujian/save-code', true);
+            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhttp.send('kode_ujian=' + encodeURIComponent(randomCode) + '&id_ujian=' + encodeURIComponent(<?php echo $ujian['id']; ?>));
+        });
+    }
+
+    document.getElementById('exportExcel').addEventListener('click', function() {
         // Send an AJAX request to save the code
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                // Code successfully saved
-                console.log('Code saved:', randomCode);
+                console.log('Excel exported');
             }
         };
-        xhttp.open('POST', '/save-code', true);
+        xhttp.open('POST', '/ujian/export/<?= $ujian['id']; ?>', true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhttp.send('kode_ujian=' + encodeURIComponent(randomCode) + '&id_ujian=' + encodeURIComponent(<?php echo $ujian['id']; ?>));
-
     });
 
     function generateRandomCode() {

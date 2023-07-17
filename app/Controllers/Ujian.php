@@ -8,7 +8,13 @@ use App\Models\SoalModel;
 use App\Models\UjianModel;
 use App\Models\KodeUjianModel;
 use App\Models\BabUntukUjianModel;
+use App\Models\UserNilaiModel;
+use App\Models\UsersModel;
+
+
 use Config\Database;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Ujian extends BaseController
 {
@@ -18,6 +24,8 @@ class Ujian extends BaseController
     protected $UjianModel;
     protected $KodeUjianModel;
     protected $BabUntukUjianModel;
+    protected $UserNilaiModel;
+    protected $UsersModel;
     protected $helpers = ['form'];
     public function __construct()
     {
@@ -27,6 +35,8 @@ class Ujian extends BaseController
         $this->UjianModel = new UjianModel();
         $this->KodeUjianModel = new KodeUjianModel();
         $this->BabUntukUjianModel = new BabUntukUjianModel();
+        $this->UsersModel = new UsersModel();
+        $this->UserNilaiModel = new UserNilaiModel();
     }
 
     public function tambahUjian($id)
@@ -234,5 +244,53 @@ class Ujian extends BaseController
 
         // Send a response indicating success
         return $this->response->setJSON(['success' => true]);
+    }
+
+    public function exportToExcel($id)
+    {
+        $ujian = $this->UjianModel->getUjian($id);
+        $namaUjian = $ujian['nama_ujian'];
+        $stringLowercase = strtolower($namaUjian);
+        $stringWithUnderscores = str_replace(' ', '_', $stringLowercase);
+        
+        $nilai = $this->UserNilaiModel->where('id_ujian', $id)->findAll();
+
+        // Create a new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+
+        // Set the active sheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers to the first row
+        $sheet->setCellValue('A1', 'Nama');
+        $sheet->setCellValue('B1', 'NIM');
+        $sheet->setCellValue('C1', 'Nilai');
+        $sheet->setCellValue('D1', 'Tanggal');
+
+        // Iterate over the results and add them to the spreadsheet
+        $row = 2;
+        foreach ($nilai as $result) {
+            $user = $this->UsersModel->GetUser($result['id_users']);
+            $nama_user = $user['fullname'];
+            $username_user = $user['username'];
+            $sheet->setCellValue('A' . $row, $nama_user);
+            $sheet->setCellValue('B' . $row, $username_user);
+            $sheet->setCellValue('C' . $row, $result['nilai']);
+            $sheet->setCellValue('D' . $row, $result['updated_at']);
+            $row++;
+        }
+
+        // Create a new Excel file writer
+        $writer = new Xlsx($spreadsheet);
+
+        // Set the appropriate headers for the response
+        $fileName = 'hasil_ujian_'. $stringWithUnderscores .'.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        // Save the spreadsheet file to the response output
+        $writer->save('php://output');
+        die;
     }
 }
