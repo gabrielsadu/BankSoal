@@ -15,12 +15,13 @@ class CountdownModel extends Model
         if ($id == false) {
             return $this->findAll();
         }
-
-        return $this->where(['id_kode_users' => $id])->findColumn('remaining_duration')[0];
+        return empty($this->where(['id_kode_users' => $id])->findColumn('remaining_duration')) ? 0 : $this
+            ->where(['id_kode_users' => $id])->findColumn('remaining_duration')[0];
     }
     public function saveRemainingDuration($idKodeUsers, $remainingDuration)
     {
-        $existingRow = null !== $this->where('id_kode_users', $idKodeUsers) ? $this->where('id_kode_users', $idKodeUsers) : '';
+        $existingRow = empty($this->where(['id_kode_users' => $idKodeUsers])->first()) ? 0 :
+            $this->where(['id_kode_users' => $idKodeUsers]);
 
         if ($existingRow) {
             // If the id_kode_users exists, update the remaining_duration

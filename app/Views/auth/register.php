@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Philosopher:regular">
     <link rel="stylesheet" href="<?= base_url("styles.css") ?>">
+    <title>Bank Soal</title>
 </head>
 
 <body>

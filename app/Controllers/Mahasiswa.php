@@ -161,6 +161,7 @@ class Mahasiswa extends BaseController
         Mahasiswa::randomize($id);
         $selectedQuestionIds = $this->UserSoalUjianModel->getSoalId($id);
         $selectedAnswers = $this->UserSoalUjianModel->getSoalIdAndJawabanDipilih($id);
+        $remainingTime = $this->CountdownModel->getCountdown($id);
         $currentPage = $this->request->getVar('page_soal') ? $this->request->getVar('page_soal') : 1;
         $data = [
             'title' => 'Bank Soal',
@@ -170,6 +171,7 @@ class Mahasiswa extends BaseController
             'currentPage' => $currentPage,
             'jawaban' => $selectedAnswers,
             'serverTime' => date("H:i:s"),
+            'remainingTime' => $remainingTime,
             'id' => $id
         ];
 

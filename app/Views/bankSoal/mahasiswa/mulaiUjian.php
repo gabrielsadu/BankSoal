@@ -85,58 +85,25 @@
     });
 
     // Set the countdown duration in minutes
-    var countdownDuration = <?= $ujian['durasi_ujian'] ?>;
+var countdownDuration = <?= $ujian['durasi_ujian'] ?>;
 
-    // Get the countdown element
-    var countdownElement = document.getElementById('countdown');
+// Get the countdown element
+var countdownElement = document.getElementById('countdown');
 
-    // Start the countdown immediately
-    startCountdown();
+// Start the countdown immediately
+startCountdown();
 
-    function startCountdown() {
-        // Check if the countdown end time is already set in a cookie
-        var endTime = parseInt(getCookie('countdown_end_time'));
+function startCountdown() {
+    
+    var remainingTime = <?= $remainingTime ?>;
 
-        // Calculate the total countdown time in milliseconds
-        var totalTime = countdownDuration * 60 * 1000;
+    // Calculate the total countdown time in milliseconds
+    var totalTime = countdownDuration * 60 * 1000;
 
-        // If the countdown end time is not set or has expired, calculate and set it
-        if (!endTime || Date.now() > endTime) {
-            endTime = Date.now() + totalTime;
-            setCookie('countdown_end_time', endTime, 60); // Set the cookie to expire in 60 minutes
-        }
-
-        // Update the countdown immediately
-        updateCountdown();
-
-        // Start the countdown interval
-        var countdown = setInterval(updateCountdown, 1000);
-
-        // Function to update the countdown
-        function updateCountdown() {
-            // Calculate the remaining time
-            var remainingTime = endTime - Date.now();
-            // Check if the countdown has reached 0
-            if (remainingTime < 0) {
-                // Stop the countdown
-                clearInterval(countdown);
-
-                // Auto-submit the form
-                document.getElementById('ujianForm').submit();
-                return;
-            }
-            var hours = Math.floor(remainingTime / (60 * 60 * 1000));
-            var minutes = Math.floor(remainingTime / (60 * 1000));
-            var seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
-
-            // Format the time with leading zeros
-            var formattedTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
-
-            // Display the countdown timer
-            countdownElement.textContent = formattedTime;
-
-            if (seconds % 5 === 0) {
-                $.ajax({
+    // If the remaining time is not set or has expired, calculate and set it
+    if (!remainingTime || remainingTime < 0) {
+        remainingTime = totalTime;
+        $.ajax({
                     url: '/ujian/save_remaining_duration',
                     method: 'POST',
                     data: {
@@ -150,28 +117,57 @@
                         console.error('Error saving or updating remaining duration:', error);
                     }
                 });
-            }
-        }
     }
 
-    // Function to set a cookie
-    function setCookie(name, value, minutes) {
-        var expires = new Date();
-        expires.setTime(expires.getTime() + (minutes * 60 * 1000));
-        document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
-    }
+    // Calculate the countdown end time based on the remaining time
+    var endTime = Date.now() + remainingTime;
 
-    // Function to get the value of a cookie
-    function getCookie(name) {
-        var cookieName = name + '=';
-        var cookieArray = document.cookie.split(';');
-        for (var i = 0; i < cookieArray.length; i++) {
-            var cookie = cookieArray[i].trim();
-            if (cookie.indexOf(cookieName) === 0) {
-                return cookie.substring(cookieName.length, cookie.length);
-            }
+    // Update the countdown immediately
+    updateCountdown();
+
+    // Start the countdown interval
+    var countdown = setInterval(updateCountdown, 1000);
+
+    // Function to update the countdown
+    function updateCountdown() {
+        // Calculate the remaining time
+        remainingTime = endTime - Date.now();
+        // Check if the countdown has reached 0
+        if (remainingTime < 0) {
+            // Stop the countdown
+            clearInterval(countdown);
+
+            // Auto-submit the form
+            document.getElementById('ujianForm').submit();
+            return;
         }
-        return '';
+        var hours = Math.floor(remainingTime / (60 * 60 * 1000));
+        var minutes = Math.floor(remainingTime / (60 * 1000));
+        var seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+
+        // Format the time with leading zeros
+        var formattedTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+
+        // Display the countdown timer
+        countdownElement.textContent = formattedTime;
+
+        window.onbeforeunload = function() {
+            $.ajax({
+                    url: '/ujian/save_remaining_duration',
+                    method: 'POST',
+                    data: {
+                        idKodeUsers: <?= $id ?>, 
+                        remainingDuration: remainingTime
+                    },
+                    success: function(response) {
+                        console.log('Remaining duration saved or updated in the database.');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error saving or updating remaining duration:', error);
+                    }
+                });
+        };
     }
+}
 </script>
 <?= $this->endSection(); ?>
