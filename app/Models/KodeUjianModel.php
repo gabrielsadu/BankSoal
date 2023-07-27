@@ -18,17 +18,27 @@ class KodeUjianModel extends Model
 
         $array = $this->where('kode_ujian', $id)->findColumn('kode_ujian');
         if (empty($array)) {
-            return null; 
+            return null;
         }
 
         return $array[0];
     }
     public function getUjian($kode_ujian)
     {
-        return $this->where('kode_ujian', $kode_ujian)->findColumn('id_ujian')[0];
+        $array = $this->where('kode_ujian', $kode_ujian)->findColumn('id_ujian');
+        if (empty($array)) {
+            return null;
+        }
+
+        return $array[0];
     }
     public function getKodeUjianByUjian($id_ujian)
     {
-        return $this->where('id_ujian', $id_ujian)->findColumn('kode_ujian')[0];
+        $array = $this->where('id_ujian', $id_ujian)->findColumn('kode_ujian');
+        if (empty($array)) {
+            return null;
+        }
+
+        return $array[0];
     }
 }

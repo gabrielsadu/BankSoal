@@ -60,9 +60,11 @@
                     <tr>
                         <td>Kode Ujian</td>
                         <td>
+                            <p id="codeCell">
                             <?php if ($kode_ujian) : ?>
-                                <p id="codeCell"><?= $kode_ujian; ?></p>
+                                <?= $kode_ujian; ?>
                             <?php endif; ?>
+                            </p>
                             <a id="generateButton" class="btn btn-primary pull-right" href="#" role="button">Generate Kode Baru</a>
                         </td>
                     </tr>
