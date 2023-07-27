@@ -4,9 +4,11 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1 class="mt-2">BAB <?= $bab['nomor_bab'] ?> - <?= $bab['nama_bab'] ?></h1><br>
+            <h2 class="mt-2">BAB <?= $bab['nomor_bab'] ?> - <?= $bab['nama_bab'] ?></h2><br>
             <a class="btn btn-primary" href="/banksoal/<?= $id_mata_kuliah; ?>/">Kembali ke Daftar Bab</a><br><br>
-            <a href="/banksoal/<?= $id_mata_kuliah; ?>/bab/<?= $bab['id'] ?>/tambah_soal" class="btn btn-primary mb-3">Tambah Soal</a><br>
+            <a href="/banksoal/<?= $id_mata_kuliah; ?>/bab/<?= $bab['id'] ?>/tambah_soal" class="btn btn-primary mb-3">Tambah Soal</a><br><br>
+            <h5 class="mt-2">Sub Capaian Pembelajaran (Sub CPMK)</h5>
+            <p style="white-space: pre-wrap;"><?= $bab['sub_cpmk'] ?></p><br>
             <?php if (session()->getFlashdata('pesan')) : ?>
                 <div class="alert alert-success" role="alert">
                     <?= session()->getFlashdata('pesan'); ?>

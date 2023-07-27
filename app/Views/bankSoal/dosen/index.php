@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h2 class="mt-2">Bank Soal</h1>
+            <h2 class="mt-2">Bank Soal</h2>
             </br></br>
             <div class="col d-flex justify-content-center">
                 <?php foreach ($mataKuliah as $k) : ?>

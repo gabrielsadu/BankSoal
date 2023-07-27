@@ -88,9 +88,15 @@ class Mahasiswa extends BaseController
     {
         $kodeUjian = $this->KodeUsersModel->getKode($id);
         $idUjian = $this->KodeUjianModel->getUjian($kodeUjian);
+        $idBabs = $this->BabUntukUjianModel->where('id_ujian', $idUjian)->findColumn('id_bab');
+        $sub_cpmk = [];
+        foreach ($idBabs as $bab) {
+            $sub_cpmk[] = $this->BabModel->where('id', $bab)->findColumn('sub_cpmk')[0];
+        }
         $data = [
             'title' => 'Bank Soal',
             'ujian' => $this->UjianModel->getUjian($idUjian),
+            'sub_cpmk' => $sub_cpmk,
             'id_kode_users' => $id
         ];
 
@@ -107,9 +113,13 @@ class Mahasiswa extends BaseController
         $assignedBabs = $this->BabUntukUjianModel->where('id_ujian', $id_ujian)->findColumn('id_bab');
         $randomizedSoal = [];
         $questionCount = $this->UjianModel->where('id', $id_ujian)->findColumn('jumlah_soal')[0];
+        $random = $this->UjianModel->where('id', $id_ujian)->findColumn('random')[0];
         $questionPerBab = round($questionCount / count($assignedBabs));
         foreach ($assignedBabs as $index => $assignedBab) {
             $allSoal = $this->SoalModel->where('id_bab', $assignedBab)->findAll();
+            if ($random) {
+                shuffle($allSoal);
+            }
             if ($index === count($assignedBabs) - 1) {
                 $randomSoal = array_slice($allSoal, 0, $questionCount);
             } else {
@@ -118,6 +128,8 @@ class Mahasiswa extends BaseController
             }
             $randomizedSoal = array_merge($randomizedSoal, $randomSoal);
         }
+        $recordExists = false;
+
         foreach ($randomizedSoal as $soal) {
             $idSoal = $soal['id'];
             $existingRecord = $this->UserSoalUjianModel
@@ -126,12 +138,22 @@ class Mahasiswa extends BaseController
                 ->first();
 
             if (!empty($existingRecord)) {
+                // Set the flag to true if an existing record is found
+                $recordExists = true;
+                // No need to continue the loop, as we found an existing record
                 break;
             }
-            $this->UserSoalUjianModel->insert([
-                'id_soal' => $idSoal,
-                'id_kode_users' => $id,
-            ]);
+        }
+
+        // Insert the record only if the flag remains false
+        if (!$recordExists) {
+            foreach ($randomizedSoal as $soal) {
+                $idSoal = $soal['id'];
+                $this->UserSoalUjianModel->insert([
+                    'id_soal' => $idSoal,
+                    'id_kode_users' => $id,
+                ]);
+            }
         }
     }
     public function simpanJawabanDipilih()
@@ -190,9 +212,9 @@ class Mahasiswa extends BaseController
 
         foreach ($soals as $soal) {
             $jawaban = null;
-            foreach ($soalIdAndJawaban as $jawaban) {
-                if ($jawaban['id_soal'] === $soal['id']) {
-                    $jawaban = $jawaban['jawaban_dipilih'];
+            foreach ($soalIdAndJawaban as $soalIdAndJawabans) {
+                if ($soalIdAndJawabans['id_soal'] === $soal['id']) {
+                    $jawaban = $soalIdAndJawabans['jawaban_dipilih'];
                     break;
                 }
             }
@@ -212,6 +234,44 @@ class Mahasiswa extends BaseController
                 'nilai' => $nilai
             ]);
         }
+
+        $idBabs = $this->BabUntukUjianModel->where('id_ujian', $idUjian)->findColumn('id_bab');
+        $sub_cpmk = [];
+        $jumlah_soal_per_sub_cpmk = [];
+        $jumlah_benar_per_sub_cpmk = [];
+
+        foreach ($idBabs as $bab) {
+            $sub_cpmk[] = $this->BabModel->where('id', $bab)->findColumn('sub_cpmk')[0];
+
+            $count_jumlah_soal = 0;
+            $count_jumlah_benar = 0;
+            foreach ($soals as $soal) {
+                if ($soal['id_bab'] == $bab) {
+                    $count_jumlah_soal += 1;
+                    $jawaban = null;
+                    foreach ($soalIdAndJawaban as $soalIdAndJawabans) {
+                        if ($soalIdAndJawabans['id_soal'] === $soal['id']) {
+                            $jawaban = $soalIdAndJawabans['jawaban_dipilih'];
+                            break;
+                        }
+                    }
+                    $isCorrect = ($jawaban === $soal['jawaban_benar']);
+                    if ($isCorrect) {
+                        $count_jumlah_benar += 1;
+                    }
+                }
+            }
+
+            $jumlah_soal_per_sub_cpmk[] = $count_jumlah_soal;
+            $jumlah_benar_per_sub_cpmk[] = $count_jumlah_benar;
+        }
+
+        $combinedArray = [];
+
+        for ($i = 0; $i < count($sub_cpmk); $i++) {
+            $combinedArray[] = [$sub_cpmk[$i], $jumlah_benar_per_sub_cpmk[$i], $jumlah_soal_per_sub_cpmk[$i],];
+        }
+
         $data = [
             'title' => 'Bank Soal',
             'nilai' => $nilai,
@@ -219,6 +279,7 @@ class Mahasiswa extends BaseController
             'soalUjian' =>  $soals,
             'soalIdAndJawaban' => $soalIdAndJawaban,
             'jawabanBenar' => $jawabanBenar,
+            'sub_cpmk' => $combinedArray,
             'id' => $id
         ];
         return view('bankSoal/mahasiswa/hasilUjian', $data);

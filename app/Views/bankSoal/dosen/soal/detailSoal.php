@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1 class="mt-2">BAB <?= $bab['nomor_bab'] ?> - <?= $bab['nama_bab'] ?></h1><br>
+            <h2 class="mt-2">BAB <?= $bab['nomor_bab'] ?> - <?= $bab['nama_bab'] ?></h2><br>
             <a class="btn btn-primary" href="/banksoal/<?= $id_mata_kuliah; ?>/bab/<?= $id_bab; ?>">Kembali ke Daftar Soal</a>
             <br><br>
             <table class="table">

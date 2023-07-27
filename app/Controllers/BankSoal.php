@@ -102,6 +102,7 @@ class BankSoal extends BaseController
         $this->BabModel->insert([
             'nomor_bab' => $this->request->getVar('nomor_bab'),
             'nama_bab' => $this->request->getVar('nama_bab'),
+            'sub_cpmk' => $this->request->getVar('sub_cpmk'),
             'id_mata_kuliah' => $id
         ]);
         session()->setFlashdata('pesan_bab', 'Bab berhasil ditambahkan');
@@ -123,14 +124,13 @@ class BankSoal extends BaseController
             'bab' => $this->BabModel->getBab($id),
             'id' => $id_mata_kuliah
         ];
-        session()->setFlashdata('pesan_bab', 'Bab berhasil ubah');
         return view('bankSoal/dosen/bab/ubahBab', $data);
     }
 
     public function updateBab($id_mata_kuliah, $id)
     {
         $babLama = $this->BabModel->getBab($id);
-        if ($babLama['nomor_bab'] == $this->request->getVar('nomor_bab') && $babLama['nama_bab'] == $this->request->getVar('nama_bab')) {
+        if ($babLama['nomor_bab'] == $this->request->getVar('nomor_bab') && $babLama['nama_bab'] == $this->request->getVar('nama_bab') && $babLama['sub_cpmk'] == $this->request->getVar('sub_cpmk')) {
             return redirect()->to('/banksoal/' . $id_mata_kuliah . '/ubah_bab/' . $id)->withInput();
         }
 
@@ -138,9 +138,10 @@ class BankSoal extends BaseController
             'id' => $id,
             'nomor_bab' => $this->request->getVar('nomor_bab'),
             'nama_bab' => $this->request->getVar('nama_bab'),
+            'sub_cpmk' => $this->request->getVar('sub_cpmk'),
             'id_mata_kuliah' => $id_mata_kuliah,
         ]);
-        session()->setFlashdata('pesan', 'Bab berhasil diubah');
+        session()->setFlashdata('pesan_bab', 'Bab berhasil diubah');
         return redirect()->to('/banksoal/' . $id_mata_kuliah);
     }
 }

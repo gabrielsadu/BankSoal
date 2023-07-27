@@ -59,12 +59,11 @@
                     </tr>
                     <tr>
                         <td>Kode Ujian</td>
-                        <td id="codeCell">
+                        <td>
                             <?php if ($kode_ujian) : ?>
-                                <?= $kode_ujian; ?>
-                            <?php else : ?>
-                                <a id="generateButton" class="btn btn-primary" href="#" role="button">Generate Kode</a>
+                                <p id="codeCell"><?= $kode_ujian; ?></p>
                             <?php endif; ?>
+                            <a id="generateButton" class="btn btn-primary pull-right" href="#" role="button">Generate Kode Baru</a>
                         </td>
                     </tr>
                 </tbody>
@@ -104,7 +103,6 @@
     if (generateButton) {
         generateButton.addEventListener('click', function() {
             var randomCode = generateRandomCode();
-            this.textContent = randomCode;
             document.getElementById('codeCell').textContent = randomCode;
             // Send an AJAX request to save the code
             var xhttp = new XMLHttpRequest();
@@ -114,7 +112,7 @@
                     console.log('Code saved:', randomCode);
                 }
             };
-            xhttp.open('POST', '/ujian/save-code', true);
+            xhttp.open('POST', '/banksoal/save-code', true);
             xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhttp.send('kode_ujian=' + encodeURIComponent(randomCode) + '&id_ujian=' + encodeURIComponent(<?php echo $ujian['id']; ?>));
         });

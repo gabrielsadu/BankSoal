@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
             <h2 class="my-3">Masuk Ujian</h2>
-            <br><br>
+            <br>
             <form action="/ujian/mendaftar_ujian" method="post">
                 <?= csrf_field(); ?>
                 <div class="row mb-3">

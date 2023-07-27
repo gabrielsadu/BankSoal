@@ -27,6 +27,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <label for="sub_cpmk" class="col-sm-2 col-form-label">Sub CPMK</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control <?= (validation_show_error('sub_cpmk')) ? 'is-invalid' : ''; ?> " id="sub_cpmk" name="sub_cpmk"><?= $bab['sub_cpmk']; ?></textarea>
+                        <div class="invalid-feedback">
+                            <?= validation_show_error('sub_cpmk'); ?>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary">Ubah Bab</button>
             </form>
         </div>

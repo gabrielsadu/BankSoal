@@ -234,15 +234,11 @@ class Ujian extends BaseController
         $kode_ujian = $this->request->getPost('kode_ujian');
         $id_ujian = $this->request->getPost('id_ujian');
 
-        // Insert the code into the KodeUjianModel
-        $kodeUjianModel = new KodeUjianModel();
-        $data = [
+        $this->KodeUjianModel->insert([
             'kode_ujian' => $kode_ujian,
             'id_ujian' => $id_ujian
-        ];
-        $kodeUjianModel->insert($data);
+        ]);
 
-        // Send a response indicating success
         return $this->response->setJSON(['success' => true]);
     }
 

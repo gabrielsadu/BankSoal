@@ -42,6 +42,14 @@
                         <td><?= $ujian['jumlah_soal'] ?></td>
                     </tr>
                     <tr>
+                        <td>Sub CPMK</td>
+                        <td><?php $i = 1; foreach ($sub_cpmk as $k) {
+                            echo $i . '. ' .$k.'<br>';
+                            $i++;
+                        }
+                        ?></td>
+                    </tr>
+                    <tr>
                         <td>Acak Soal</td>
                         <td><?= ($ujian['random']) === 0 ? 'Tidak' : 'Ya'; ?></td>
                     </tr>
